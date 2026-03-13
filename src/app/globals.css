@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green-primary: #43a047;
+  --green-dark: #2e7d32;
+  --green-light: #66bb6a;
+  --orange-primary: #e65100;
+  --pink-primary: #ad1457;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Spring gradient backgrounds */
+.spring-gradient {
+  background: linear-gradient(135deg, #e8f5e9 0%, #fff9c4 35%, #fce4ec 70%, #e0f7fa 100%);
+}
+
+.spring-gradient-hero {
+  background: linear-gradient(135deg, #c8e6c9 0%, #fff9c4 30%, #f8bbd0 65%, #b2ebf2 100%);
+}
+
+/* Tool card hover effect */
+.tool-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
