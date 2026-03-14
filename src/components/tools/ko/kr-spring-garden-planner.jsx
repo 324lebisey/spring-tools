@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useRef } from "react";
 
 const REGIONS = {
@@ -29,7 +30,6 @@ const PLANTS = [
 ];
 
 const TYPE_FILTERS = ["전체", "채소", "허브", "꽃", "과일"];
-
 function getPlantingDate(region, weeksBeforeFrost) {
   const r = REGIONS[region];
   if (!r) return null;

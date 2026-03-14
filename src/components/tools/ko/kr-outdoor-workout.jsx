@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useRef } from "react";
 const FL = [{id:"beginner",label:"초급",emoji:"🌱",desc:"운동 시작하는 단계"},{id:"intermediate",label:"중급",emoji:"💪",desc:"규칙적으로 운동"},{id:"advanced",label:"고급",emoji:"🔥",desc:"진짜 도전 원함"}];
 const EQ = [{id:"none",label:"맨몸",emoji:"🙌"},{id:"bands",label:"저항 밴드",emoji:"🟡"},{id:"dumbbells",label:"덤벨",emoji:"🏋️"},{id:"pullup_bar",label:"철봉",emoji:"🏗️"},{id:"jump_rope",label:"줄넘기",emoji:"🪢"}];

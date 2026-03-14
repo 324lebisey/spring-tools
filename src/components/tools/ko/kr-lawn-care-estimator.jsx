@@ -1,5 +1,6 @@
 'use client';
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 
 const HOUSING = {
   apartment: { name: "아파트 (베란다/옥상)", emoji: "🏢", areaMult: 0.3, desc: "베란다 텃밭, 화분 관리 중심" },
