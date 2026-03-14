@@ -543,7 +543,7 @@ export default function DeclutterPlanGenerator() {
   const [clutter, setClutter] = useState("");
   const [plan, setPlan] = useState(null);
   const [checked, setChecked] = useState({});
-  const [expandedDay, setExpandedDay] = useState(null);
+  const [expandedDay, setExpandedDay] = useState({});
   const resultRef = useRef(null);
 
   const downloadPDF = (element, filename) => {
@@ -568,7 +568,7 @@ export default function DeclutterPlanGenerator() {
     const result = generatePlan(selectedRooms, time, clutter);
     setPlan(result);
     setChecked({});
-    setExpandedDay("w0-d0");
+    setExpandedDay({"w0-d0": true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -758,7 +758,7 @@ export default function DeclutterPlanGenerator() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {week.map((day, di) => {
                     const dayKey = `w${wi}-d${di}`;
-                    const isExpanded = expandedDay === dayKey;
+                    const isExpanded = !!expandedDay[dayKey];
                     const dayTasks = day.flatMap((zone) => zone.tasks);
                     dayTasks.filter((_, ti) => {
                       day.findIndex((z) => z.tasks.includes(dayTasks[ti]));
@@ -784,7 +784,7 @@ export default function DeclutterPlanGenerator() {
                         }}
                       >
                         <div
-                          onClick={() => setExpandedDay(isExpanded ? null : dayKey)}
+                          onClick={() => setExpandedDay(prev => ({...prev, [dayKey]: !prev[dayKey]}))}
                           style={{
                             padding: "14px 18px",
                             cursor: "pointer",

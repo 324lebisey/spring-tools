@@ -131,7 +131,7 @@ export default function AllergyPrepTool() {
   const [timing, setTiming] = useState("");
   const [plan, setPlan] = useState(false);
   const [checked, setChecked] = useState({});
-  const [expandedSymptom, setExpandedSymptom] = useState(null);
+  const [expandedSymptom, setExpandedSymptom] = useState({});
   const resultRef = useRef(null);
 
   const downloadPDF = (element, filename) => {
@@ -158,7 +158,7 @@ export default function AllergyPrepTool() {
   const generate = () => {
     setPlan(true);
     setChecked({});
-    setExpandedSymptom(symptoms[0] || null);
+    setExpandedSymptom(symptoms[0] ? {[symptoms[0]]: true} : {});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -352,13 +352,13 @@ export default function AllergyPrepTool() {
               {symptoms.map((symId) => {
                 const sym = SYMPTOMS.find((s) => s.id === symId);
                 const remedies = SYMPTOM_REMEDIES[symId];
-                const isExpanded = expandedSymptom === symId;
+                const isExpanded = !!expandedSymptom[symId];
                 if (!remedies) return null;
 
                 return (
                   <div key={symId} style={{ marginBottom: 10 }}>
                     <div
-                      onClick={() => setExpandedSymptom(isExpanded ? null : symId)}
+                      onClick={() => setExpandedSymptom(prev => ({...prev, [symId]: !prev[symId]}))}
                       style={{
                         padding: "14px 18px", borderRadius: isExpanded ? "14px 14px 0 0" : 14,
                         background: isExpanded ? "#e8eaf6" : "#f5f5f5", cursor: "pointer",

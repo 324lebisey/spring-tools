@@ -145,7 +145,7 @@ export default function CouchTo5K() {
   const [goal, setGoal] = useState("");
   const [terrain, setTerrain] = useState("");
   const [plan, setPlan] = useState(null);
-  const [expandedWeek, setExpandedWeek] = useState(null);
+  const [expandedWeek, setExpandedWeek] = useState({});
   const [completed, setCompleted] = useState({});
   const resultRef = useRef(null);
 
@@ -167,7 +167,7 @@ export default function CouchTo5K() {
     const result = generatePlan(fitness, days, goal, terrain);
     setPlan(result);
     setCompleted({});
-    setExpandedWeek(0);
+    setExpandedWeek({0: true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -342,14 +342,14 @@ export default function CouchTo5K() {
 
             {/* Week cards */}
             {plan.weeks.map((week, wi) => {
-              const isExpanded = expandedWeek === wi;
+              const isExpanded = !!expandedWeek[wi];
               const weekDone = week.sessions.filter((_, si) => completed[`w${wi}-s${si}`]).length;
               const weekComplete = weekDone === week.sessions.length;
 
               return (
                 <div key={wi} style={{ marginBottom: 10 }}>
                   <div
-                    onClick={() => setExpandedWeek(isExpanded ? null : wi)}
+                    onClick={() => setExpandedWeek(prev => ({...prev, [wi]: !prev[wi]}))}
                     style={{
                       padding: "16px 20px",
                       borderRadius: isExpanded ? "16px 16px 0 0" : 16,

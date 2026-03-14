@@ -188,7 +188,7 @@ export default function MealPrepPlanner() {
   const [budget, setBudget] = useState("");
   const [weekPlan, setWeekPlan] = useState(null);
   const [groceryList, setGroceryList] = useState([]);
-  const [expandedDay, setExpandedDay] = useState(null);
+  const [expandedDay, setExpandedDay] = useState({});
   const [checked, setChecked] = useState({});
   const [showGrocery, setShowGrocery] = useState(false);
   const resultRef = useRef(null);
@@ -212,7 +212,7 @@ export default function MealPrepPlanner() {
     setWeekPlan(week);
     setGroceryList(buildGroceryList(week));
     setChecked({});
-    setExpandedDay("Monday");
+    setExpandedDay({"Monday": true});
     setShowGrocery(false);
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
@@ -307,10 +307,10 @@ export default function MealPrepPlanner() {
             {!showGrocery ? (
               <div>
                 {weekPlan.map((day) => {
-                  const isExpanded = expandedDay === day.day;
+                  const isExpanded = !!expandedDay[day.day];
                   return (
                     <div key={day.day} style={{ marginBottom: 8 }}>
-                      <div onClick={() => setExpandedDay(isExpanded ? null : day.day)} style={{ padding: "14px 18px", borderRadius: isExpanded ? "14px 14px 0 0" : 14, background: isExpanded ? "#fff3e0" : "rgba(255,255,255,0.88)", border: isExpanded ? "2px solid #ffcc80" : "2px solid rgba(230,81,0,0.06)", borderBottom: isExpanded ? "none" : undefined, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div onClick={() => setExpandedDay(prev => ({...prev, [day.day]: !prev[day.day]}))} style={{ padding: "14px 18px", borderRadius: isExpanded ? "14px 14px 0 0" : 14, background: isExpanded ? "#fff3e0" : "rgba(255,255,255,0.88)", border: isExpanded ? "2px solid #ffcc80" : "2px solid rgba(230,81,0,0.06)", borderBottom: isExpanded ? "none" : undefined, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
                           <span style={{ fontWeight: 800, color: isExpanded ? "#e65100" : "#555", fontSize: 15 }}>{day.day}</span>
                           {!isExpanded && <span style={{ fontSize: 12, color: "#bbb", marginLeft: 10 }}>{day.breakfast?.name} · {day.lunch?.name} · {day.dinner?.name}</span>}

@@ -353,7 +353,7 @@ export default function CapsuleWardrobeBuilder() {
   const [gender, setGender] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [owned, setOwned] = useState({});
-  const [expandedCat, setExpandedCat] = useState("tops");
+  const [expandedCat, setExpandedCat] = useState({});
   const resultRef = useRef(null);
 
   const downloadPDF = (element, filename) => {
@@ -372,7 +372,7 @@ export default function CapsuleWardrobeBuilder() {
   const generate = () => {
     setShowResult(true);
     setOwned({});
-    setExpandedCat("tops");
+    setExpandedCat({"tops": true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -520,12 +520,12 @@ export default function CapsuleWardrobeBuilder() {
             {Object.entries(capsule).map(([catKey, items]) => {
               const meta = CATEGORY_META[catKey];
               if (!meta || !items || items.length === 0) return null;
-              const isExpanded = expandedCat === catKey;
+              const isExpanded = !!expandedCat[catKey];
 
               return (
                 <div key={catKey} style={{ marginBottom: 10 }}>
                   <div
-                    onClick={() => setExpandedCat(isExpanded ? null : catKey)}
+                    onClick={() => setExpandedCat(prev => ({...prev, [catKey]: !prev[catKey]}))}
                     style={{
                       padding: "14px 18px", borderRadius: isExpanded ? "14px 14px 0 0" : 14,
                       background: isExpanded ? "#fce4ec" : "rgba(255,255,255,0.88)",

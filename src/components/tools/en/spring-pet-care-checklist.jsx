@@ -259,7 +259,7 @@ export default function PetCareChecklist() {
   const [concerns, setConcerns] = useState([]);
   const [plan, setPlan] = useState(false);
   const [checked, setChecked] = useState({});
-  const [expandedSection, setExpandedSection] = useState("vet");
+  const [expandedSection, setExpandedSection] = useState({});
   const resultRef = useRef(null);
 
   const downloadPDF = (element, filename) => {
@@ -281,7 +281,7 @@ export default function PetCareChecklist() {
   const generate = () => {
     setPlan(true);
     setChecked({});
-    setExpandedSection("vet");
+    setExpandedSection({"vet": true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -420,12 +420,12 @@ export default function PetCareChecklist() {
                 items: CONCERN_TASKS[c].tasks.map((t) => ({ task: t, emoji: "→" })),
               })),
             ].map((section) => {
-              const isExpanded = expandedSection === section.id;
+              const isExpanded = !!expandedSection[section.id];
               const sectionDone = section.items.filter((_, i) => checked[`${section.id}-${i}`]).length;
 
               return (
                 <div key={section.id} style={{ marginBottom: 8 }}>
-                  <div onClick={() => setExpandedSection(isExpanded ? null : section.id)} style={{
+                  <div onClick={() => setExpandedSection(prev => ({...prev, [section.id]: !prev[section.id]}))} style={{
                     padding: "14px 18px", borderRadius: isExpanded ? "14px 14px 0 0" : 14,
                     background: isExpanded ? "#efebe9" : "rgba(255,255,255,0.88)",
                     border: isExpanded ? "2px solid #bcaaa4" : "2px solid rgba(109,76,65,0.06)",

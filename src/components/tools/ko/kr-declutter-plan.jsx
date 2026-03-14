@@ -115,7 +115,7 @@ export default function DeclutterPlanKR() {
   const [clutter, setClutter] = useState("");
   const [plan, setPlan] = useState(null);
   const [checked, setChecked] = useState({});
-  const [expandedDay, setExpandedDay] = useState(null);
+  const [expandedDay, setExpandedDay] = useState({});
   const resultRef = useRef(null);
 
   const downloadPDF = (element, filename) => {
@@ -137,7 +137,7 @@ export default function DeclutterPlanKR() {
   const generate = () => {
     if (selectedRooms.length === 0 || !time || !clutter) return;
     const result = generatePlan(selectedRooms, time, clutter);
-    setPlan(result); setChecked({}); setExpandedDay("w0-d0");
+    setPlan(result); setChecked({}); setExpandedDay({"w0-d0": true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -247,10 +247,10 @@ export default function DeclutterPlanKR() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {week.map((day, di) => {
                     const dayKey = `w${wi}-d${di}`;
-                    const isExpanded = expandedDay === dayKey;
+                    const isExpanded = !!expandedDay[dayKey];
                     return (
                       <div key={di} style={{ background: "rgba(255,255,255,0.88)", borderRadius: 16, border: isExpanded ? "2px solid #ffcc80" : "2px solid rgba(230,81,0,0.06)", overflow: "hidden" }}>
-                        <div onClick={() => setExpandedDay(isExpanded ? null : dayKey)}
+                        <div onClick={() => setExpandedDay(prev => ({...prev, [dayKey]: !prev[dayKey]}))}
                           style={{ padding: "14px 18px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                             <span style={{ fontWeight: 800, color: "#e65100", fontSize: 15 }}>{wi * 5 + di + 1}일차</span>

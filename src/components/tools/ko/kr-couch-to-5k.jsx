@@ -106,7 +106,7 @@ export default function CouchTo5KKR() {
   const [goal, setGoal] = useState("");
   const [terrain, setTerrain] = useState("");
   const [plan, setPlan] = useState(null);
-  const [expandedWeek, setExpandedWeek] = useState(null);
+  const [expandedWeek, setExpandedWeek] = useState({});
   const [completed, setCompleted] = useState({});
   const resultRef = useRef(null);
 
@@ -125,7 +125,7 @@ export default function CouchTo5KKR() {
 
   const generate = () => {
     if (!fitness || !days || !goal || !terrain) return;
-    setPlan(generatePlan(fitness, days)); setCompleted({}); setExpandedWeek(0);
+    setPlan(generatePlan(fitness, days)); setCompleted({}); setExpandedWeek({0: true});
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 150);
   };
 
@@ -228,11 +228,11 @@ export default function CouchTo5KKR() {
             )}
 
             {plan.map((week, wi) => {
-              const isExpanded = expandedWeek === wi;
+              const isExpanded = !!expandedWeek[wi];
               const weekDone = week.sessions.filter((_, si) => completed[`w${wi}-s${si}`]).length;
               return (
                 <div key={wi} style={{ marginBottom: 10 }}>
-                  <div onClick={() => setExpandedWeek(isExpanded ? null : wi)}
+                  <div onClick={() => setExpandedWeek(prev => ({...prev, [wi]: !prev[wi]}))}
                     style={{ padding: "16px 20px", borderRadius: isExpanded ? "16px 16px 0 0" : 16, background: weekDone === week.sessions.length ? "linear-gradient(135deg, #e8f5e9, #f1f8e9)" : "rgba(255,255,255,0.88)", border: isExpanded ? "2px solid #a5d6a7" : "2px solid rgba(46,125,50,0.06)", borderBottom: isExpanded ? "none" : undefined, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
                       <span style={{ fontFamily: "'Jua', cursive", color: "#2e7d32", fontSize: 16 }}>{week.week}주차</span>
