@@ -262,6 +262,19 @@ export default function PetCareChecklist() {
   const [expandedSection, setExpandedSection] = useState("vet");
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const toggleConcern = (id) => setConcerns((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
   const toggleCheck = (key) => setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -349,6 +362,28 @@ export default function PetCareChecklist() {
 
         {plan && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'pet-care-checklist.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #6d4c41, #a1887f)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(109,76,65,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
             {/* Progress */}
             <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #d7ccc8" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>

@@ -110,6 +110,19 @@ export default function CouchTo5KKR() {
   const [completed, setCompleted] = useState({});
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const generate = () => {
     if (!fitness || !days || !goal || !terrain) return;
     setPlan(generatePlan(fitness, days)); setCompleted({}); setExpandedWeek(0);
@@ -173,6 +186,28 @@ export default function CouchTo5KKR() {
 
         {plan && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'couch-to-5k-plan.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #2e7d32, #66bb6a)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(46,125,50,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 PDF 다운로드
+            </button>
             <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #a5d6a7" }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
                 <MS emoji="📅" value={`${plan.length}주`} label="기간" />

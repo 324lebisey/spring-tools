@@ -287,6 +287,19 @@ export default function OutdoorWorkoutGenerator() {
   const [completed, setCompleted] = useState({});
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const toggleEquip = (id) => setEquipment((prev) => prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]);
   const toggleComplete = (i) => setCompleted((prev) => ({ ...prev, [i]: !prev[i] }));
 
@@ -360,6 +373,28 @@ export default function OutdoorWorkoutGenerator() {
 
         {workout && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'outdoor-workout.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: `linear-gradient(135deg, ${activeColor}, ${activeColor}bb)`,
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: `0 4px 15px ${activeColor}40`,
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
             <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: `2px solid ${activeColor}30` }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
                 <MiniStat emoji={FOCUS.find(f => f.id === workout.focus)?.emoji || "💪"} value={workout.focus.replace("_", " ")} label="Focus" color={activeColor} />

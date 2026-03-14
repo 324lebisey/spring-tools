@@ -45,7 +45,19 @@ function countItems(c){return Object.values(c).reduce((s,items)=>s+items.length,
 
 export default function CapsuleWardrobeKR(){
   const[cl,sCl]=useState("");const[st,sSt]=useState("");const[bu,sBu]=useState("");const[ge,sGe]=useState("");
-  const[show,sSh]=useState(false);const[owned,sO]=useState({});const[exp,sExp]=useState("tops");const ref=useRef(null);
+  const[show,sSh]=useState(false);const[owned,sO]=useState({});const[exp,sExp]=useState("tops");const ref=useRef(null);const pdfRef=useRef(null);
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
   const gen=()=>{sSh(true);sO({});sExp("tops");setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),150);};
   const tO=(k)=>sO(p=>({...p,[k]:!p[k]}));
   const cap=show?getCapsule(ge,st):null;const tot=cap?countItems(cap):0;const oc=Object.values(owned).filter(Boolean).length;
@@ -61,7 +73,29 @@ export default function CapsuleWardrobeKR(){
   <S n="4" t="누구를 위한 옷장?" c="#ad1457"><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>{GENDER.map(x=>(<B key={x.id} a={ge===x.id} o={()=>sGe(x.id)} c="#ad1457"><div style={{fontSize:24}}>{x.emoji}</div><div style={{fontWeight:800,fontSize:13}}>{x.label}</div></B>))}</div></S>
   {ok&&<button onClick={gen} style={{width:"100%",padding:"16px",borderRadius:16,border:"none",background:"linear-gradient(135deg,#ad1457,#ec407a)",color:"#fff",fontFamily:"'Jua',cursive",fontSize:20,cursor:"pointer",marginBottom:24,boxShadow:"0 4px 20px rgba(173,20,87,0.3)"}}>👗 캡슐 옷장 만들기!</button>}
 
-  {show&&cap&&<div ref={ref}>
+  {show&&cap&&<div ref={ref}><div ref={pdfRef}>
+  <button
+    onClick={() => downloadPDF(pdfRef.current, 'capsule-wardrobe.pdf')}
+    style={{
+      width: "100%",
+      marginBottom: 16,
+      padding: "14px",
+      borderRadius: 14,
+      border: "none",
+      background: "linear-gradient(135deg, #ad1457, #ec407a)",
+      color: "#fff",
+      fontWeight: 800,
+      fontSize: 15,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      transition: "transform 0.15s",
+      boxShadow: "0 4px 15px rgba(173,20,87,0.3)",
+    }}
+    onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+    onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+  >
+    📥 PDF 다운로드
+  </button>
   <div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"20px 24px",marginBottom:20,border:"2px solid #f8bbd0"}}>
   <div style={{display:"flex",justifyContent:"space-around",flexWrap:"wrap",gap:12,marginBottom:14}}><MS e="👕" v={tot} l="총 아이템"/><MS e="✅" v={oc} l="이미 있는 것"/><MS e="🛒" v={tot-oc} l="사야 할 것"/><MS e="🔄" v={`${Math.round(tot*(tot-1)*0.6)}+`} l="가능한 코디 수"/></div>
   <div style={{background:"#fce4ec",borderRadius:10,height:14,overflow:"hidden"}}><div style={{width:`${tot>0?(oc/tot)*100:0}%`,height:"100%",background:"linear-gradient(90deg,#ec407a,#ad1457)",borderRadius:10,transition:"width 0.4s"}}/></div>
@@ -108,7 +142,7 @@ export default function CapsuleWardrobeKR(){
   <div style={{color:"#888",fontSize:13,marginTop:4}}>쇼핑 없이 바로 코디를 시작하세요!</div>
   </div>}
 
-  </div>}
+  </div></div>}
 
   <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#f48fb1",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>👗🌸✨</div>봄 캡슐 옷장 — 옷장 고민 없이, 매일 예쁘게!</div></div></div>);
 }

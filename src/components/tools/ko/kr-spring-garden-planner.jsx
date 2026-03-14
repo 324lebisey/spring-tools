@@ -61,6 +61,20 @@ export default function SpringGardenPlannerKR() {
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [gardenList, setGardenList] = useState([]);
   const resultsRef = useRef(null);
+  const gardenPlanRef = useRef(null);
+
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
 
   const filteredPlants = PLANTS.filter(
     (p) => filter === "전체" || p.type === filter
@@ -169,7 +183,7 @@ export default function SpringGardenPlannerKR() {
             </div>
 
             {gardenPlants.length > 0 && (
-              <div style={{ background: "rgba(255,255,255,0.92)", borderRadius: 20, padding: "28px", boxShadow: "0 4px 24px rgba(46,125,50,0.12)", border: "2px solid #a5d6a7" }}>
+              <div ref={gardenPlanRef} style={{ background: "rgba(255,255,255,0.92)", borderRadius: 20, padding: "28px", boxShadow: "0 4px 24px rgba(46,125,50,0.12)", border: "2px solid #a5d6a7" }}>
                 <h2 style={{ fontFamily: "'Jua', cursive", color: "#2e7d32", margin: "0 0 4px", fontSize: 22 }}>🪴 내 텃밭 계획</h2>
                 <p style={{ color: "#7cb342", margin: "0 0 20px", fontSize: 14, fontWeight: 600 }}>
                   {gardenPlants.length}개 작물 선택 — 파종 일정순으로 정렬!
@@ -197,6 +211,28 @@ export default function SpringGardenPlannerKR() {
                     );
                   })}
                 </div>
+                <button
+                  onClick={() => downloadPDF(gardenPlanRef.current, 'my-garden-plan.pdf')}
+                  style={{
+                    width: "100%",
+                    marginTop: 20,
+                    padding: "14px",
+                    borderRadius: 14,
+                    border: "none",
+                    background: "linear-gradient(135deg, #43a047, #66bb6a)",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 15,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "transform 0.15s",
+                    boxShadow: "0 4px 15px rgba(67,160,71,0.3)",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  📥 PDF 다운로드
+                </button>
               </div>
             )}
           </>

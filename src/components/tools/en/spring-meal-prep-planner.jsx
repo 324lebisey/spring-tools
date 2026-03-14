@@ -193,6 +193,19 @@ export default function MealPrepPlanner() {
   const [showGrocery, setShowGrocery] = useState(false);
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const generate = () => {
     const meals = getMeals(diet, cooking);
     const week = generateWeek(meals);
@@ -263,6 +276,28 @@ export default function MealPrepPlanner() {
 
         {weekPlan && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'meal-prep-plan.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #e65100, #ff8a65)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(230,81,0,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
             {/* Toggle tabs */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <button onClick={() => setShowGrocery(false)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: !showGrocery ? "2px solid #e65100" : "2px solid #e0e0e0", background: !showGrocery ? "#fff3e0" : "#fff", fontWeight: 800, fontSize: 14, color: !showGrocery ? "#e65100" : "#999", cursor: "pointer", fontFamily: "inherit" }}>📅 Meal Plan</button>

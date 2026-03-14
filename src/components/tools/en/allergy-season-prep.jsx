@@ -134,6 +134,19 @@ export default function AllergyPrepTool() {
   const [expandedSymptom, setExpandedSymptom] = useState(null);
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const toggleSymptom = (id) => {
     setSymptoms((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   };
@@ -268,6 +281,28 @@ export default function AllergyPrepTool() {
         {/* Results */}
         {plan && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'allergy-action-plan.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #5c6bc0, #7986cb)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(92,107,192,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
             {/* Alert banner */}
             {severity === "severe" && (
               <div style={{ background: "#ffebee", border: "2px solid #ef9a9a", borderRadius: 16, padding: "16px 20px", marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 12 }}>

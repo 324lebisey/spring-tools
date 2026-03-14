@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const REGIONS = {
   northeast: { name: "Northeast", seedMult: 1.1, laborMult: 1.2 },
@@ -46,6 +46,21 @@ export default function LawnCareEstimator() {
   const [useCustom, setUseCustom] = useState(false);
   const [selectedServices, setSelectedServices] = useState(["seed", "fertilizer", "weed"]);
   const [diyVsPro, setDiyVsPro] = useState("diy");
+
+  const estimateRef = useRef(null);
+
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
 
   const activeSqft = useCustom ? parseInt(customSqft) || 0 : sqft;
   const regionData = REGIONS[region];
@@ -253,6 +268,7 @@ export default function LawnCareEstimator() {
         {/* Results */}
         {showResults && selectedServices.length > 0 && (
           <div
+            ref={estimateRef}
             style={{
               background: "rgba(255,255,255,0.93)",
               borderRadius: 22,
@@ -315,6 +331,28 @@ export default function LawnCareEstimator() {
             <p style={{ fontSize: 12, color: "#aaa", margin: "14px 0 0", textAlign: "center" }}>
               * Estimates are approximate and vary by provider, soil conditions, and season. Get 2-3 local quotes for best pricing.
             </p>
+            <button
+              onClick={() => downloadPDF(estimateRef.current, 'lawn-care-estimate.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #558b2f, #7cb342)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(85,139,47,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
           </div>
         )}
 

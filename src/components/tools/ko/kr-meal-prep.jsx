@@ -20,6 +20,18 @@ function getMeals(d,c){return MEALS[d]?.[c]||MEALS.none?.minimal||{breakfasts:[]
 function genWeek(meals){const days=["월","화","수","목","금","토","일"];const{breakfasts:b=[],lunches:l=[],dinners:d=[]}=meals;return days.map((day,i)=>({day,breakfast:b[i%b.length],lunch:l[i%l.length],dinner:d[i%d.length]}));}
 function buildGrocery(wp){const all={};wp.forEach(d=>{[d.breakfast,d.lunch,d.dinner].forEach(m=>{m?.ing?.forEach(i=>{const k=i.toLowerCase();all[k]=(all[k]||0)+1;});});});return Object.entries(all).sort((a,b)=>b[1]-a[1]).map(([n,c])=>({name:n,count:c}));}
 export default function MealPrepKR(){const[diet,sD]=useState("");const[hh,sH]=useState("");const[cook,sC]=useState("");const[wp,sW]=useState(null);const[gl,sG]=useState([]);const[ed,sE]=useState(null);const[ch,sCh]=useState({});const[sg,sSg]=useState(false);const ref=useRef(null);
+const downloadPDF = (element, filename) => {
+  import('html2pdf.js').then((html2pdfModule) => {
+    const html2pdf = html2pdfModule.default;
+    html2pdf().set({
+      margin: [10, 10, 10, 10],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    }).from(element).save();
+  });
+};
 const gen=()=>{const m=getMeals(diet,cook);const w=genWeek(m);sW(w);sG(buildGrocery(w));sCh({});sE("월");sSg(false);setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),150);};
 const ok=diet&&hh&&cook;
 return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8f5e9 0%,#fffde7 30%,#fff3e0 60%,#fce4ec 100%)",fontFamily:"'Noto Sans KR',sans-serif",overflow:"hidden"}}><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&family=Jua&display=swap" rel="stylesheet"/>
@@ -31,6 +43,28 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8f5e9
 <S n="3" t="요리 수준?" c="#e65100">{COOK.map(x=>(<B key={x.id} a={cook===x.id} o={()=>sC(x.id)} c="#e65100" w><span style={{fontSize:22,marginRight:12}}>{x.emoji}</span><div><div style={{fontWeight:800}}>{x.label}</div><div style={{fontSize:12,opacity:0.65}}>{x.desc}</div></div></B>))}</S>
 {ok&&<button onClick={gen} style={{width:"100%",padding:"16px",borderRadius:16,border:"none",background:"linear-gradient(135deg,#e65100,#ff8a65)",color:"#fff",fontFamily:"'Jua',cursive",fontSize:20,cursor:"pointer",marginBottom:24,boxShadow:"0 4px 20px rgba(230,81,0,0.3)"}}>🥗 일주일 식단 만들기!</button>}
 {wp&&<div ref={ref}>
+<button
+  onClick={() => downloadPDF(ref.current, 'meal-prep-plan.pdf')}
+  style={{
+    width: "100%",
+    marginBottom: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #e65100, #ff8a65)",
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: "0 4px 15px rgba(230,81,0,0.3)",
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button>
 <div style={{display:"flex",gap:8,marginBottom:16}}><button onClick={()=>sSg(false)} style={{flex:1,padding:"12px",borderRadius:12,border:!sg?"2px solid #e65100":"2px solid #e0e0e0",background:!sg?"#fff3e0":"#fff",fontWeight:800,fontSize:14,color:!sg?"#e65100":"#999",cursor:"pointer",fontFamily:"inherit"}}>📅 식단표</button><button onClick={()=>sSg(true)} style={{flex:1,padding:"12px",borderRadius:12,border:sg?"2px solid #e65100":"2px solid #e0e0e0",background:sg?"#fff3e0":"#fff",fontWeight:800,fontSize:14,color:sg?"#e65100":"#999",cursor:"pointer",fontFamily:"inherit"}}>🛒 장보기 ({gl.length}개)</button></div>
 {!sg?wp.map(day=>{const isE=ed===day.day;return(<div key={day.day} style={{marginBottom:8}}><div onClick={()=>sE(isE?null:day.day)} style={{padding:"14px 18px",borderRadius:isE?"14px 14px 0 0":14,background:isE?"#fff3e0":"rgba(255,255,255,0.88)",border:isE?"2px solid #ffcc80":"2px solid rgba(230,81,0,0.06)",borderBottom:isE?"none":undefined,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><span style={{fontWeight:800,color:isE?"#e65100":"#555",fontSize:15}}>{day.day}요일</span>{!isE&&<span style={{fontSize:12,color:"#bbb",marginLeft:10}}>{day.breakfast?.name} · {day.lunch?.name} · {day.dinner?.name}</span>}</div><span style={{color:"#ccc",transform:isE?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>▼</span></div>
 {isE&&<div style={{border:"2px solid #ffcc80",borderTop:"none",borderRadius:"0 0 14px 14px",padding:"16px 18px",background:"#fffaf3"}}>{[{l:"🌅 아침",m:day.breakfast},{l:"☀️ 점심",m:day.lunch},{l:"🌙 저녁",m:day.dinner}].map(({l,m})=>m&&<div key={l} style={{marginBottom:16,padding:"14px 16px",background:"#fff",borderRadius:12,border:"1.5px solid #f0f0f0"}}><div style={{fontSize:12,color:"#e65100",fontWeight:800,marginBottom:4}}>{l}</div><div style={{fontWeight:800,color:"#333",fontSize:16,marginBottom:6}}>{m.name}</div><div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:8}}><span style={{fontSize:12,color:"#888"}}>⏱️ {m.time}</span><span style={{fontSize:12,color:"#888"}}>🔥 {m.cal}kcal</span><span style={{fontSize:12,color:"#888"}}>💪 {m.protein}</span></div>{m.seasonal?.length>0&&<div style={{fontSize:11,color:"#43a047",fontWeight:700,marginBottom:6}}>🌱 제철: {m.seasonal.join(", ")}</div>}<div style={{fontSize:13,color:"#555",lineHeight:1.7,marginBottom:8}}><strong>만들기:</strong> {m.how}</div><div style={{fontSize:12,color:"#999"}}><strong>재료:</strong> {m.ing?.join(", ")}</div></div>)}</div>}</div>)})

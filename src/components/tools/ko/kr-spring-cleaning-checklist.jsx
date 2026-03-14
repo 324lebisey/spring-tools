@@ -113,6 +113,19 @@ export default function SpringCleaningKR() {
   const [checked, setChecked] = useState({});
   const resultRef = useRef(null);
 
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const toggleExtra = (id) => setExtras((prev) => prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]);
 
   const generate = () => {
@@ -198,6 +211,28 @@ export default function SpringCleaningKR() {
 
         {checklist && (
           <div ref={resultRef}>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'spring-cleaning-checklist.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #1565c0, #42a5f5)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(21,101,192,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 PDF 다운로드
+            </button>
             <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 16, padding: "18px 22px", marginBottom: 20, border: "2px solid #bbdefb" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <span style={{ fontWeight: 800, color: "#1565c0", fontSize: 15 }}>진행률: {doneTasks}/{totalTasks}개</span>

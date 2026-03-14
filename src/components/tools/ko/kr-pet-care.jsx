@@ -25,6 +25,18 @@ const tCon=(id)=>sCon(p=>p.includes(id)?p.filter(c=>c!==id):[...p,id]);const tCh
 const hasDog=pt==="dog"||pt==="both";const hasCat=pt==="cat"||pt==="both";
 const ok=pt&&petRegion&&(hasDog?ds:true)&&(hasCat?ct:true);
 const fleaData=PET_REGIONS.find(r=>r.id===petRegion)||PET_REGIONS[1];
+const downloadPDF = (element, filename) => {
+  import('html2pdf.js').then((html2pdfModule) => {
+    const html2pdf = html2pdfModule.default;
+    html2pdf().set({
+      margin: [10, 10, 10, 10],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    }).from(element).save();
+  });
+};
 const gen=()=>{sPl(true);sCh({});sExp("vet");setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),150);};
 let tot=0;const cnt=(items)=>{tot+=items.length;};
 if(plan){if(hasDog){cnt(VET_DOG);cnt(GROOM_DOG[ds]||[]);cnt(HOME_DOG);}if(hasCat){cnt(VET_CAT);cnt(GROOM_CAT[ct]||[]);cnt(HOME_CAT);}con.forEach(c=>{if(CONCERN_TASKS[c])cnt(CONCERN_TASKS[c].tasks);});}
@@ -39,6 +51,28 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#fff3e0
 <S n="4" t="특별히 걱정되는 것?" c="#6d4c41" su="해당하는 것 모두 선택"><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:10}}>{CON.map(x=>(<B key={x.id} a={con.includes(x.id)} o={()=>tCon(x.id)} c="#6d4c41"><span style={{fontSize:20,marginRight:4}}>{x.emoji}</span><span style={{fontWeight:700,fontSize:12}}>{x.label}</span></B>))}</div></S>
 {ok&&<button onClick={gen} style={{width:"100%",padding:"16px",borderRadius:16,border:"none",background:"linear-gradient(135deg,#6d4c41,#a1887f)",color:"#fff",fontFamily:"'Jua',cursive",fontSize:20,cursor:"pointer",marginBottom:24,boxShadow:"0 4px 20px rgba(109,76,65,0.3)"}}>🐾 케어 플랜 만들기!</button>}
 {plan&&<div ref={ref}>
+<button
+  onClick={() => downloadPDF(ref.current, 'pet-care-plan.pdf')}
+  style={{
+    width: "100%",
+    marginBottom: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #6d4c41, #a1887f)",
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: "0 4px 15px rgba(109,76,65,0.3)",
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button>
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"20px 24px",marginBottom:20,border:"2px solid #d7ccc8"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}><span style={{fontWeight:800,color:"#6d4c41",fontSize:14}}>진행률: {dc}/{tot}개</span><span style={{fontSize:12,color:"#aaa"}}>{tot>0?Math.round((dc/tot)*100):0}%</span></div><div style={{background:"#efebe9",borderRadius:10,height:14,overflow:"hidden"}}><div style={{width:`${tot>0?(dc/tot)*100:0}%`,height:"100%",background:dc===tot&&tot>0?"linear-gradient(90deg,#66bb6a,#43a047)":"linear-gradient(90deg,#a1887f,#6d4c41)",borderRadius:10,transition:"width 0.4s"}}/></div>{dc===tot&&tot>0&&<div style={{textAlign:"center",marginTop:10,fontSize:16,fontWeight:800,color:"#43a047"}}>🎉 완료! 최고의 반려인이에요! 🏆</div>}</div>
 
 <div style={{background:"#fff8e1",border:"2px solid #ffe082",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",alignItems:"flex-start",gap:12}}><span style={{fontSize:24}}>🪲</span><div><div style={{fontWeight:800,color:"#f9a825",fontSize:15}}>벼룩/진드기 예방 시작: {fleaData.fleaStart}</div><div style={{fontSize:13,color:"#f57f17"}}>{fleaData.note}</div></div></div>

@@ -51,6 +51,21 @@ export default function LawnCareEstimatorKR() {
   const [selectedServices, setSelectedServices] = useState(["weeding", "fertilizer", "cleanup"]);
   const [diyVsPro, setDiyVsPro] = useState("diy");
 
+  const estimateRef = useRef(null);
+
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
+
   const activeSqm = useCustom ? parseInt(customSqm) || 0 : sqm;
   const housingData = HOUSING[housing];
   const condData = CONDITIONS[condition];
@@ -163,7 +178,7 @@ export default function LawnCareEstimatorKR() {
         </Section>
 
         {showResults && selectedServices.length > 0 && (
-          <div style={{ background: "rgba(255,255,255,0.93)", borderRadius: 22, padding: "28px", boxShadow: "0 6px 30px rgba(51,105,30,0.12)", border: "2px solid #aed581", marginTop: 8 }}>
+          <div ref={estimateRef} style={{ background: "rgba(255,255,255,0.93)", borderRadius: 22, padding: "28px", boxShadow: "0 6px 30px rgba(51,105,30,0.12)", border: "2px solid #aed581", marginTop: 8 }}>
             <h2 style={{ fontFamily: "'Jua', cursive", color: "#33691e", margin: "0 0 6px", fontSize: 24 }}>💰 예상 비용</h2>
             <p style={{ color: "#7cb342", fontSize: 13, fontWeight: 600, margin: "0 0 20px" }}>
               {HOUSING[housing].name} · {CONDITIONS[condition].label} · {activeSqm}㎡ · {diyVsPro === "pro" ? "전문업체" : "DIY"}
@@ -186,6 +201,28 @@ export default function LawnCareEstimatorKR() {
             <p style={{ fontSize: 12, color: "#aaa", margin: "14px 0 0", textAlign: "center" }}>
               * 예상 비용은 참고용이며, 업체와 지역에 따라 달라질 수 있습니다. 2-3곳에서 견적을 받아보세요.
             </p>
+            <button
+              onClick={() => downloadPDF(estimateRef.current, 'lawn-care-estimate.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #558b2f, #7cb342)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(85,139,47,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 PDF 다운로드
+            </button>
           </div>
         )}
 

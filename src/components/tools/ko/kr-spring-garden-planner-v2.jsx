@@ -139,6 +139,20 @@ export default function SpringGardenPlannerKR() {
   const [showPrep, setShowPrep] = useState(true);
   const [checkedPrep, setCheckedPrep] = useState({});
   const resultsRef = useRef(null);
+  const gardenPlanRef = useRef(null);
+
+  const downloadPDF = (element, filename) => {
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default;
+      html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(element).save();
+    });
+  };
 
   const filteredPlants = PLANTS.filter((p) => {
     if (filter !== "전체" && p.type !== filter) return false;
@@ -399,7 +413,7 @@ export default function SpringGardenPlannerKR() {
 
             {/* My Balcony Garden Plan */}
             {gardenPlants.length > 0 && (
-              <div style={{ ...sectionCard, border: "2px solid #a5d6a7" }}>
+              <div ref={gardenPlanRef} style={{ ...sectionCard, border: "2px solid #a5d6a7" }}>
                 <div style={{ fontFamily: "'Jua', cursive", color: "#2e7d32", fontSize: 18, marginBottom: 4 }}>
                   🪴 내 베란다 텃밭 계획
                 </div>
@@ -447,6 +461,29 @@ export default function SpringGardenPlannerKR() {
                     );
                   })}
                 </div>
+
+                <button
+                  onClick={() => downloadPDF(gardenPlanRef.current, 'garden-plan.pdf')}
+                  style={{
+                    width: "100%",
+                    marginTop: 20,
+                    padding: "14px",
+                    borderRadius: 14,
+                    border: "none",
+                    background: "linear-gradient(135deg, #43a047, #66bb6a)",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 15,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "transform 0.15s",
+                    boxShadow: "0 4px 15px rgba(67,160,71,0.3)",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  📥 PDF 다운로드
+                </button>
               </div>
             )}
           </>
