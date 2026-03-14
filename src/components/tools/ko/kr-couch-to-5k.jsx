@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const FITNESS_LEVELS = [
   { id: "couch", label: "완전 초보", emoji: "🛋️", desc: "운동 안 한 지 오래됨", weeks: 10 },
@@ -107,8 +107,11 @@ export default function CouchTo5KKR() {
   const [terrain, setTerrain] = useState("");
   const [plan, setPlan] = useState(null);
   const [expandedWeek, setExpandedWeek] = useState({});
-  const [completed, setCompleted] = useState({});
+  const [completed, setCompleted] = useState(() => { try { const s = localStorage.getItem("kr-couch-to-5k-completed"); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  const [allExpanded, setAllExpanded] = useState(false);
   const resultRef = useRef(null);
+
+  useEffect(() => { try { localStorage.setItem("kr-couch-to-5k-completed", JSON.stringify(completed)); } catch {} }, [completed]);
 
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
@@ -208,7 +211,8 @@ export default function CouchTo5KKR() {
             >
               📥 PDF 다운로드
             </button>
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #a5d6a7" }}>
+            <button onClick={() => { setCompleted({}); setExpandedWeek({0: true}); setAllExpanded(false); }} style={{ width: "100%", marginBottom: 16, padding: "14px", borderRadius: 14, border: "2px solid #e0e0e0", background: "#fff", color: "#888", fontWeight: 800, fontSize: 15, cursor: "pointer", fontFamily: "inherit", transition: "transform 0.15s" }} onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")} onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}>🔄 처음부터 다시</button>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #a5d6a7", position: "sticky", top: 0, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
                 <MS emoji="📅" value={`${plan.length}주`} label="기간" />
                 <MS emoji="🏃" value={`${totalSessions}회`} label="세션" />
@@ -227,6 +231,7 @@ export default function CouchTo5KKR() {
               <div style={{ background: "#f1f8e9", borderRadius: 14, padding: "14px 18px", marginBottom: 20, fontSize: 13, color: "#558b2f", fontWeight: 600 }}>{terrainTips[terrain]}</div>
             )}
 
+            <button onClick={() => { if (allExpanded) { setExpandedWeek({}); setAllExpanded(false); } else { const all = {}; plan.forEach((_, i) => { all[i] = true; }); setExpandedWeek(all); setAllExpanded(true); } }} style={{ width: "100%", marginBottom: 12, padding: "10px", borderRadius: 12, border: "2px solid #a5d6a7", background: "#f1f8e9", color: "#2e7d32", fontWeight: 800, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>{allExpanded ? "🔽 모두 접기" : "🔼 모두 펼치기"}</button>
             {plan.map((week, wi) => {
               const isExpanded = !!expandedWeek[wi];
               const weekDone = week.sessions.filter((_, si) => completed[`w${wi}-s${si}`]).length;

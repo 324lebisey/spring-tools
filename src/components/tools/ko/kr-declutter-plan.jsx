@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const ROOMS = [
   { id: "bedroom", name: "침실", emoji: "🛏️" },
@@ -118,6 +118,19 @@ export default function DeclutterPlanKR() {
   const [expandedDay, setExpandedDay] = useState({});
   const resultRef = useRef(null);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kr-declutter-plan-checked");
+      if (saved) setChecked(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("kr-declutter-plan-checked", JSON.stringify(checked));
+    } catch {}
+  }, [checked]);
+
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
       const html2pdf = html2pdfModule.default;
@@ -220,7 +233,28 @@ export default function DeclutterPlanKR() {
             >
               📥 PDF 다운로드
             </button>
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #ffcc80" }}>
+            <button
+              onClick={() => { setSelectedRooms([]); setTime(""); setClutter(""); setPlan(null); setChecked({}); setExpandedDay({}); }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "2px dashed #ccc",
+                background: "rgba(255,255,255,0.7)",
+                color: "#888",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#e65100"; e.currentTarget.style.color = "#e65100"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 처음부터 다시
+            </button>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #ffcc80", position: "sticky", top: 16, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
                 <Stat label="총 일수" value={plan.totalDays} emoji="📅" />
                 <Stat label="주" value={plan.totalWeeks} emoji="🗓️" />
@@ -238,6 +272,31 @@ export default function DeclutterPlanKR() {
                 <div style={{ textAlign: "center", marginTop: 12, fontSize: 16, fontWeight: 800, color: "#43a047" }}>🎉 정리 완료! 깔끔한 공간에서 새 봄을 즐기세요!</div>
               )}
             </div>
+
+            <button
+              onClick={() => {
+                const allExpanded = plan.weeks.every((week, wi) => week.every((_, di) => expandedDay[`w${wi}-d${di}`]));
+                const newState = {};
+                plan.weeks.forEach((week, wi) => week.forEach((_, di) => { newState[`w${wi}-d${di}`] = !allExpanded; }));
+                setExpandedDay(newState);
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #ffcc80",
+                background: "rgba(255,255,255,0.85)",
+                color: "#e65100",
+                fontWeight: 800,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+            >
+              {plan.weeks.every((week, wi) => week.every((_, di) => expandedDay[`w${wi}-d${di}`])) ? "🔽 모두 접기" : "🔼 모두 펼치기"}
+            </button>
 
             {plan.weeks.map((week, wi) => (
               <div key={wi} style={{ marginBottom: 20 }}>

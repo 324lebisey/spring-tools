@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const DIETS = [
   { id: "none", label: "No Restrictions", emoji: "🍽️" },
@@ -193,6 +193,21 @@ export default function MealPrepPlanner() {
   const [showGrocery, setShowGrocery] = useState(false);
   const resultRef = useRef(null);
 
+  // Load checked state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("meal-prep-checked");
+      if (saved) setChecked(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  // Save checked state to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem("meal-prep-checked", JSON.stringify(checked));
+    } catch {}
+  }, [checked]);
+
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
       const html2pdf = html2pdfModule.default;
@@ -298,6 +313,38 @@ export default function MealPrepPlanner() {
             >
               📥 Download as PDF
             </button>
+            <button
+              onClick={() => {
+                setDiet("");
+                setHousehold("");
+                setCooking("");
+                setBudget("");
+                setWeekPlan(null);
+                setGroceryList([]);
+                setExpandedDay({});
+                setChecked({});
+                setShowGrocery(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
             {/* Toggle tabs */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <button onClick={() => setShowGrocery(false)} style={{ flex: 1, padding: "12px", borderRadius: 12, border: !showGrocery ? "2px solid #e65100" : "2px solid #e0e0e0", background: !showGrocery ? "#fff3e0" : "#fff", fontWeight: 800, fontSize: 14, color: !showGrocery ? "#e65100" : "#999", cursor: "pointer", fontFamily: "inherit" }}>📅 Meal Plan</button>
@@ -306,6 +353,37 @@ export default function MealPrepPlanner() {
 
             {!showGrocery ? (
               <div>
+                {/* Expand All / Collapse All */}
+                <button
+                  onClick={() => {
+                    const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                    const allExpanded = dayNames.every(d => expandedDay[d]);
+                    if (allExpanded) {
+                      setExpandedDay({});
+                    } else {
+                      const all = {};
+                      dayNames.forEach(d => { all[d] = true; });
+                      setExpandedDay(all);
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    marginBottom: 12,
+                    padding: "10px",
+                    borderRadius: 10,
+                    border: "2px solid #ffcc80",
+                    background: "#fff3e0",
+                    color: "#e65100",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].every(d => expandedDay[d]) ? "🔽 Collapse All" : "🔼 Expand All"}
+                </button>
+
                 {weekPlan.map((day) => {
                   const isExpanded = !!expandedDay[day.day];
                   return (

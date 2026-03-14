@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const HOME_TYPES = [
   { id: "oneroom", label: "원룸 / 오피스텔", emoji: "🏠", rooms: ["bedroom_living", "bathroom", "kitchen"] },
@@ -112,6 +112,19 @@ export default function SpringCleaningKR() {
   const [checklist, setChecklist] = useState(null);
   const [checked, setChecked] = useState({});
   const resultRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kr-spring-cleaning-checked");
+      if (saved) setChecked(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("kr-spring-cleaning-checked", JSON.stringify(checked));
+    } catch {}
+  }, [checked]);
 
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
@@ -233,7 +246,28 @@ export default function SpringCleaningKR() {
             >
               📥 PDF 다운로드
             </button>
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 16, padding: "18px 22px", marginBottom: 20, border: "2px solid #bbdefb" }}>
+            <button
+              onClick={() => { setHomeType(""); setExtras([]); setDepth(""); setChecklist(null); setChecked({}); }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "2px dashed #ccc",
+                background: "rgba(255,255,255,0.7)",
+                color: "#888",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#1565c0"; e.currentTarget.style.color = "#1565c0"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 처음부터 다시
+            </button>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 16, padding: "18px 22px", marginBottom: 20, border: "2px solid #bbdefb", position: "sticky", top: 16, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <span style={{ fontWeight: 800, color: "#1565c0", fontSize: 15 }}>진행률: {doneTasks}/{totalTasks}개</span>
                 <span style={{ fontSize: 13, color: "#90a4ae", fontWeight: 600 }}>예상 ~{totalHours}시간</span>

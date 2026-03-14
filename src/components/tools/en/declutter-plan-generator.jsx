@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const ROOMS = [
   { id: "bedroom", name: "Bedroom", emoji: "🛏️" },
@@ -546,6 +546,17 @@ export default function DeclutterPlanGenerator() {
   const [expandedDay, setExpandedDay] = useState({});
   const resultRef = useRef(null);
 
+  useEffect(() => {
+    const saved = localStorage.getItem("declutter-plan-checked");
+    if (saved) { try { setChecked(JSON.parse(saved)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(checked).length > 0) {
+      localStorage.setItem("declutter-plan-checked", JSON.stringify(checked));
+    }
+  }, [checked]);
+
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
       const html2pdf = html2pdfModule.default;
@@ -704,6 +715,38 @@ export default function DeclutterPlanGenerator() {
             >
               📥 Download as PDF
             </button>
+
+            <button
+              onClick={() => {
+                setSelectedRooms([]);
+                setTime("");
+                setClutter("");
+                setPlan(null);
+                setChecked({});
+                setExpandedDay({});
+                localStorage.removeItem("declutter-plan-checked");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
+
             {/* Summary */}
             <div
               style={{
@@ -713,6 +756,9 @@ export default function DeclutterPlanGenerator() {
                 marginBottom: 20,
                 border: "2px solid #ffcc80",
                 boxShadow: "0 3px 16px rgba(230,81,0,0.08)",
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
@@ -748,6 +794,39 @@ export default function DeclutterPlanGenerator() {
                 </div>
               )}
             </div>
+
+            {/* Expand All / Collapse All */}
+            {(() => {
+              const allDayKeys = plan.weeks.flatMap((week, wi) => week.map((_, di) => `w${wi}-d${di}`));
+              const allExpanded = allDayKeys.length > 0 && allDayKeys.every((k) => !!expandedDay[k]);
+              return (
+                <button
+                  onClick={() => {
+                    if (allExpanded) {
+                      setExpandedDay({});
+                    } else {
+                      const expanded = {};
+                      allDayKeys.forEach((k) => { expanded[k] = true; });
+                      setExpandedDay(expanded);
+                    }
+                  }}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: 10,
+                    border: "2px solid #e0e0e0",
+                    background: "#fafafa",
+                    color: "#888",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    marginBottom: 12,
+                  }}
+                >
+                  {allExpanded ? "🔽 Collapse All" : "🔼 Expand All"}
+                </button>
+              );
+            })()}
 
             {/* Weeks */}
             {plan.weeks.map((week, wi) => (

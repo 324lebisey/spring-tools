@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const REGIONS = [
   { id: "northeast", name: "Northeast", emoji: "🍂", peak: "Apr–Jun", topAllergens: ["Tree pollen (oak, birch, maple)", "Grass pollen (May–Jul)", "Mold spores (spring rain)"] },
@@ -133,6 +133,17 @@ export default function AllergyPrepTool() {
   const [checked, setChecked] = useState({});
   const [expandedSymptom, setExpandedSymptom] = useState({});
   const resultRef = useRef(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("allergy-prep-checked");
+    if (saved) { try { setChecked(JSON.parse(saved)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(checked).length > 0) {
+      localStorage.setItem("allergy-prep-checked", JSON.stringify(checked));
+    }
+  }, [checked]);
 
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
@@ -303,6 +314,39 @@ export default function AllergyPrepTool() {
             >
               📥 Download as PDF
             </button>
+
+            <button
+              onClick={() => {
+                setRegion("");
+                setSymptoms([]);
+                setSeverity("");
+                setTiming("");
+                setPlan(false);
+                setChecked({});
+                setExpandedSymptom({});
+                localStorage.removeItem("allergy-prep-checked");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
+
             {/* Alert banner */}
             {severity === "severe" && (
               <div style={{ background: "#ffebee", border: "2px solid #ef9a9a", borderRadius: 16, padding: "16px 20px", marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 12 }}>
@@ -348,6 +392,38 @@ export default function AllergyPrepTool() {
               <p style={{ color: "#9fa8da", fontSize: 13, fontWeight: 600, margin: "0 0 18px" }}>
                 Targeted remedies for each of your symptoms
               </p>
+
+              {/* Expand All / Collapse All */}
+              {(() => {
+                const allExpanded = symptoms.length > 0 && symptoms.every((id) => !!expandedSymptom[id]);
+                return (
+                  <button
+                    onClick={() => {
+                      if (allExpanded) {
+                        setExpandedSymptom({});
+                      } else {
+                        const expanded = {};
+                        symptoms.forEach((id) => { expanded[id] = true; });
+                        setExpandedSymptom(expanded);
+                      }
+                    }}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: 10,
+                      border: "2px solid #e0e0e0",
+                      background: "#fafafa",
+                      color: "#888",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      fontFamily: "inherit",
+                      marginBottom: 12,
+                    }}
+                  >
+                    {allExpanded ? "🔽 Collapse All" : "🔼 Expand All"}
+                  </button>
+                );
+              })()}
 
               {symptoms.map((symId) => {
                 const sym = SYMPTOMS.find((s) => s.id === symId);

@@ -506,6 +506,27 @@ export default function SpringGardenPlannerKR() {
                 >
                   📥 PDF 다운로드
                 </button>
+                <button
+                  onClick={() => { setRegion(""); setDirection(""); setFilter("전체"); setSelectedPlant(null); setGardenList([]); setShowPrep(true); setCheckedPrep({}); }}
+                  style={{
+                    width: "100%",
+                    marginTop: 12,
+                    padding: "14px",
+                    borderRadius: 14,
+                    border: "2px dashed #ccc",
+                    background: "rgba(255,255,255,0.7)",
+                    color: "#888",
+                    fontWeight: 800,
+                    fontSize: 15,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.borderColor = "#43a047"; e.currentTarget.style.color = "#43a047"; }}
+                  onMouseOut={(e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#888"; }}
+                >
+                  🔄 처음부터 다시
+                </button>
               </div>
             )}
           </>

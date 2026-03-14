@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 const REGIONS=[{id:"seoul",name:"서울/경기",emoji:"🏙️",peak:"3월~5월",topAllergens:["참나무/소나무 꽃가루 (3-5월)","잔디 꽃가루 (5-7월)","황사 (3-4월 중국발)"]},{id:"chungcheong",name:"충청도",emoji:"🌾",peak:"3월~5월",topAllergens:["참나무/느릅나무 꽃가루","잔디 꽃가루 (5-6월)","황사 영향 큼"]},{id:"gyeongsang",name:"경상도",emoji:"⛰️",peak:"3월~5월",topAllergens:["삼나무/편백 꽃가루 (남부 빠름)","참나무 꽃가루","미세먼지"]},{id:"jeolla",name:"전라도",emoji:"🌿",peak:"2월말~5월",topAllergens:["삼나무/편백 꽃가루 (가장 빠름)","참나무 꽃가루","황사 + 미세먼지"]},{id:"gangwon",name:"강원도",emoji:"🏔️",peak:"4월~6월",topAllergens:["자작나무 꽃가루 (4-5월)","참나무 꽃가루","잔디 꽃가루 (5-7월)"]},{id:"jeju",name:"제주도",emoji:"🌺",peak:"2월~5월",topAllergens:["삼나무 꽃가루 (가장 이른 시작!)","편백 꽃가루","해양성 곰팡이 포자"]}];
 const SYMPTOMS=[{id:"sneezing",name:"재채기",emoji:"🤧"},{id:"congestion",name:"코막힘",emoji:"😤"},{id:"itchy_eyes",name:"눈 가려움/충혈",emoji:"👁️"},{id:"runny_nose",name:"콧물",emoji:"💧"},{id:"throat",name:"목 따가움",emoji:"😖"},{id:"headache",name:"두통",emoji:"🤕"},{id:"fatigue",name:"피로감",emoji:"😴"},{id:"cough",name:"기침",emoji:"😷"},{id:"skin",name:"피부 가려움",emoji:"🔴"},{id:"asthma",name:"천식 악화",emoji:"🫁"}];
 const SEVERITY=[{id:"mild",label:"경증",emoji:"🟢",desc:"불편하지만 일상생활 가능"},{id:"moderate",label:"중등도",emoji:"🟡",desc:"일상생활에 영향"},{id:"severe",label:"중증",emoji:"🔴",desc:"심각하게 힘듦"}];
 const REMEDIES={sneezing:{otc:["비졸정/세티리진 — 1일 1회 비졸림 항히스타민","코세척기로 식염수 세척 — 꽃가루 씻어내기"],home:["외출 후 바로 샤워하고 옷 갈아입기","꽃가루 많은 날 창문 닫기","세탁물 실내 건조"],avoid:["꽃가루 피크 시간대 외출 (오전 5-10시)","황사/미세먼지 나쁨 날 환기"]},congestion:{otc:["나조넥스/아바미스 (비강 스테로이드) — 코막힘에 가장 효과적","슈도에페드린 (단기간만, 3일 이내)"],home:["스팀 흡입 — 뜨거운 물 위에 수건","잘 때 베개 높이기","가습기 40-50% 유지"],avoid:["비강 스프레이 과다사용 (반동 충혈)","건조한 실내"]},itchy_eyes:{otc:["크로모글리신산 점안액 — 항히스타민 안약","인공눈물 세척용"],home:["차가운 물수건 5-10분 눈 위에","외출 시 선글라스/보안경","귀가 후 세안"],avoid:["눈 비비기!","꽃가루 많은 날 콘택트렌즈"]},runny_nose:{otc:["지르텍/알레그라 (비졸림 항히스타민)","나잘 스테로이드 스프레이"],home:["코세척기 식염수 세척 (하루 1-2회)","충분한 수분 섭취","코 입구 바셀린 (꽃가루 차단)"],avoid:["코 너무 세게 풀기","향수, 방향제"]},throat:{otc:["항히스타민 — 후비루 줄이기","인후 스프레이/목캔디"],home:["따뜻한 꿀물 + 레몬","소금물 가글","가습기 사용"],avoid:["너무 차가운 음료","건조한 환경"]},headache:{otc:["나잘 스테로이드 스프레이","타이레놀 + 코감기약"],home:["이마/콧등 따뜻한 수건","스팀 흡입","충분한 수분"],avoid:["오래 숙이는 자세","식사 거르기"]},fatigue:{otc:["졸리지 않는 항히스타민으로 교체","비강 스프레이 위주 치료"],home:["7-9시간 수면 확보","가벼운 실내 운동","충분한 수분 — 탈수 주의"],avoid:["1세대 항히스타민 (매우 졸림)","무리한 일정"]},cough:{otc:["항히스타민 — 후비루 감소","나잘 스테로이드 스프레이"],home:["꿀 한 숟가락","잘 때 머리 높이기","충분한 수분"],avoid:["눕는 자세","건조한 실내"]},skin:{otc:["비졸림 항히스타민","하이드로코르티손 크림 1%","칼라민 로션"],home:["미지근한 오트밀 목욕","무향 보습제 즉시 바르기","차가운 수건 찜질"],avoid:["뜨거운 샤워","향 있는 비누/세제"]},asthma:{otc:["⚠️ 시즌 전 주치의 상담 필수","구급 흡입기 항상 소지"],home:["매일 미세먼지/꽃가루 확인","침실 공기청정기 HEPA","창문 닫고 공기청정기"],avoid:["미세먼지 나쁜 날 야외 운동","천식약 빼먹기","초기 증상 무시"]}};
 const HOME_PREP=[{task:"에어컨 필터 교체 (HEPA 등급)",emoji:"🏠"},{task:"침실 공기청정기 설치",emoji:"💨"},{task:"이불, 베개 커버 전체 세탁",emoji:"🛏️"},{task:"매트리스, 소파 진드기 청소",emoji:"🧹"},{task:"모든 표면 물걸레질",emoji:"✨"},{task:"환풍기 청소 (곰팡이 방지)",emoji:"🚿"},{task:"알러지 방지 커버 씌우기",emoji:"🛌"},{task:"코세척기, KF94 마스크, 휴지 비축",emoji:"🧴"},{task:"현관 꽃가루 차단 존 만들기",emoji:"🚪"},{task:"방충망 청소/밀폐 확인",emoji:"🪟"},{task:"미세먼지 앱 설치 (에어코리아)",emoji:"📱"}];
 const DAILY={morning:[{task:"미세먼지/꽃가루 지수 확인",emoji:"📱"},{task:"항히스타민 복용",emoji:"💊"},{task:"비강 스프레이 사용",emoji:"👃"},{task:"외출 시 KF94 마스크 + 선글라스",emoji:"😷"}],afternoon:[{task:"귀가 시 옷 갈아입기",emoji:"👕"},{task:"손, 얼굴 씻기",emoji:"🧼"},{task:"미세먼지 나쁨이면 창문 닫기",emoji:"🪟"},{task:"공기청정기 가동",emoji:"💨"}],evening:[{task:"자기 전 샤워",emoji:"🚿"},{task:"코세척기로 세척",emoji:"💧"},{task:"침실 공기청정기 확인",emoji:"😴"},{task:"창문 닫기",emoji:"🌙"}]};
-export default function AllergyPrepKR(){const[region,setRegion]=useState("");const[symptoms,setSymptoms]=useState([]);const[severity,setSeverity]=useState("");const[timing,setTiming]=useState("");const[plan,setPlan]=useState(false);const[checked,setChecked]=useState({});const[expandedSym,setExpandedSym]=useState({});const ref=useRef(null);const downloadPDF = (element, filename) => {
+export default function AllergyPrepKR(){const[region,setRegion]=useState("");const[symptoms,setSymptoms]=useState([]);const[severity,setSeverity]=useState("");const[timing,setTiming]=useState("");const[plan,setPlan]=useState(false);const[checked,setChecked]=useState({});const[expandedSym,setExpandedSym]=useState({});const ref=useRef(null);
+useEffect(()=>{try{const saved=localStorage.getItem("kr-allergy-prep-checked");if(saved)setChecked(JSON.parse(saved));}catch{}},[]);
+useEffect(()=>{try{localStorage.setItem("kr-allergy-prep-checked",JSON.stringify(checked));}catch{}},[checked]);
+const downloadPDF = (element, filename) => {
   import('html2pdf.js').then((html2pdfModule) => {
     const html2pdf = html2pdfModule.default;
     html2pdf().set({
@@ -48,11 +51,56 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8eaf6
 >
   📥 PDF 다운로드
 </button>
+<button
+  onClick={() => { setRegion(""); setSymptoms([]); setSeverity(""); setTiming(""); setPlan(false); setChecked({}); setExpandedSym({}); }}
+  style={{
+    width: "100%",
+    marginBottom: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "2px dashed #ccc",
+    background: "rgba(255,255,255,0.7)",
+    color: "#888",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "all 0.2s",
+  }}
+  onMouseOver={(e) => { e.currentTarget.style.borderColor = "#5c6bc0"; e.currentTarget.style.color = "#5c6bc0"; }}
+  onMouseOut={(e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#888"; }}
+>
+  🔄 처음부터 다시
+</button>
 {severity==="severe"&&<div style={{background:"#ffebee",border:"2px solid #ef9a9a",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",gap:12}}><span style={{fontSize:24}}>⚠️</span><div><div style={{fontWeight:800,color:"#c62828",fontSize:15}}>알러지 전문의 방문 권장</div><div style={{fontSize:13,color:"#d32f2f",lineHeight:1.6}}>중증 알러지는 일반의약품으로 부족합니다. 알러지 검사, 면역치료 상담하세요!</div></div></div>}
 {timing==="before"&&rd&&<div style={{background:"#e8eaf6",border:"2px solid #9fa8da",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",gap:12}}><span style={{fontSize:24}}>⏰</span><div><div style={{fontWeight:800,color:"#3949ab",fontSize:15}}>지금 바로 약 시작하세요!</div><div style={{fontSize:13,color:"#5c6bc0",lineHeight:1.6}}>피크 시즌이 <strong>{rd.peak}</strong>이에요. 최적의 효과를 위해 <strong>2-4주 전부터</strong> 항히스타민제와 비강 스프레이를 시작하세요. 약이 체내에 축적되어야 효과가 극대화됩니다.</div></div></div>}
 {timing==="unsure"&&<div style={{background:"#fff8e1",border:"2px solid #ffe082",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",gap:12}}><span style={{fontSize:24}}>💡</span><div><div style={{fontWeight:800,color:"#f9a825",fontSize:15}}>추천 방법</div><div style={{fontSize:13,color:"#f57f17",lineHeight:1.6}}>가장 효과적인 방법은 피크 <strong>2-4주 전부터</strong> 매일 비졸림 항히스타민제 + 비강 스테로이드 스프레이를 시작하는 것입니다. 증상이 본격화된 후에는 잡기 어려워요. 미리 시작하는 것이 핵심!</div></div></div>}
 <div style={{background:"#fff8e1",border:"2px solid #ffe082",borderRadius:16,padding:"16px 20px",marginBottom:20,display:"flex",gap:12}}><span style={{fontSize:24}}>😷</span><div><div style={{fontWeight:800,color:"#f9a825",fontSize:15}}>한국 봄철 특별 주의</div><div style={{fontSize:13,color:"#f57f17",lineHeight:1.6}}>꽃가루 + 황사 + 미세먼지 <strong>삼중고</strong>! KF94 마스크와 공기청정기 필수. 에어코리아 앱으로 매일 체크!</div></div></div>
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:20,padding:24,marginBottom:20,border:"2px solid #c5cae9"}}><h2 style={{fontFamily:"'Jua'",color:"#5c6bc0",margin:"0 0 18px",fontSize:22}}>💊 증상별 맞춤 대처법</h2>
+<button
+  onClick={() => {
+    const allExpanded = symptoms.every(sid => expandedSym[sid]);
+    const newState = {};
+    symptoms.forEach(sid => { newState[sid] = !allExpanded; });
+    setExpandedSym(newState);
+  }}
+  style={{
+    width: "100%",
+    marginBottom: 14,
+    padding: "12px",
+    borderRadius: 12,
+    border: "2px solid #c5cae9",
+    background: "rgba(255,255,255,0.85)",
+    color: "#5c6bc0",
+    fontWeight: 800,
+    fontSize: 14,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "all 0.2s",
+  }}
+>
+  {symptoms.every(sid => expandedSym[sid]) ? "🔽 모두 접기" : "🔼 모두 펼치기"}
+</button>
 {symptoms.map(sid=>{const sym=SYMPTOMS.find(s=>s.id===sid);const rem=REMEDIES[sid];if(!rem)return null;const exp=!!expandedSym[sid];return(<div key={sid} style={{marginBottom:10}}><div onClick={()=>setExpandedSym(prev=>({...prev,[sid]:!prev[sid]}))} style={{padding:"14px 18px",borderRadius:exp?"14px 14px 0 0":14,background:exp?"#e8eaf6":"#f5f5f5",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",border:exp?"2px solid #9fa8da":"2px solid transparent",borderBottom:exp?"none":undefined}}><span style={{fontWeight:800,color:exp?"#3949ab":"#666",fontSize:15}}>{sym.emoji} {sym.name}</span><span style={{color:"#bbb",transform:exp?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>▼</span></div>
 {exp&&<div style={{padding:"16px 18px",border:"2px solid #9fa8da",borderTop:"none",borderRadius:"0 0 14px 14px",background:"#fafafe"}}>{[{t:"💊 약국 구매 가능",items:rem.otc,col:"#5c6bc0"},{t:"🏠 집에서 할 수 있는 것",items:rem.home,col:"#43a047"},{t:"🚫 피해야 할 것",items:rem.avoid,col:"#e53935"}].map((sec,si)=>(<div key={si} style={{marginBottom:14}}><div style={{fontWeight:800,color:sec.col,fontSize:13,marginBottom:6}}>{sec.t}</div>{sec.items.map((item,ii)=>{const k=`${sid}-${si}-${ii}`;const d=checked[k];return(<div key={ii} onClick={()=>check(k)} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"8px 12px",borderRadius:10,background:d?"#e8f5e9":"#fafafa",cursor:"pointer",marginBottom:4,border:d?"1.5px solid #a5d6a7":"1.5px solid transparent"}}><div style={{width:20,height:20,borderRadius:5,border:d?"2px solid #66bb6a":"2px solid #ddd",background:d?"#66bb6a":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",fontWeight:800,flexShrink:0}}>{d?"✓":""}</div><span style={{fontSize:13,color:d?"#999":"#444",textDecoration:d?"line-through":"none",fontWeight:d?400:600,lineHeight:1.5}}>{item}</span></div>)})}</div>))}</div>}</div>)})}</div>
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:20,padding:24,marginBottom:20,border:"2px solid #c5cae9"}}><h2 style={{fontFamily:"'Jua'",color:"#5c6bc0",margin:"0 0 18px",fontSize:22}}>🏠 집 알러지 대비 체크리스트</h2><div style={{display:"flex",flexDirection:"column",gap:6}}>{HOME_PREP.map((item,i)=>{const k=`home-${i}`;const d=checked[k];return(<div key={i} onClick={()=>check(k)} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"8px 12px",borderRadius:10,background:d?"#e8f5e9":"#fafafa",cursor:"pointer",border:d?"1.5px solid #a5d6a7":"1.5px solid transparent"}}><div style={{width:20,height:20,borderRadius:5,border:d?"2px solid #66bb6a":"2px solid #ddd",background:d?"#66bb6a":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",fontWeight:800,flexShrink:0}}>{d?"✓":""}</div><span style={{fontSize:13,color:d?"#999":"#444",textDecoration:d?"line-through":"none",fontWeight:d?400:600}}>{item.emoji} {item.task}</span></div>)})}</div></div>

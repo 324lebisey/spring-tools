@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { getToolBySlug } from "@/lib/tools";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n";
@@ -63,6 +64,16 @@ export default function ToolPageClient() {
   const slug = params.slug as string;
   const dict = getDictionary(lang);
   const tool = getToolBySlug(slug);
+
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (!tool) {
     return (
@@ -126,6 +137,37 @@ export default function ToolPageClient() {
 
       {/* Tool Component */}
       <ToolComponent />
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{
+            position: "fixed",
+            bottom: 28,
+            right: 28,
+            width: 48,
+            height: 48,
+            borderRadius: "50%",
+            border: "none",
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            fontSize: 22,
+            cursor: "pointer",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "opacity 0.3s, transform 0.2s",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          aria-label="Back to top"
+        >
+          ↑
+        </button>
+      )}
     </div>
   );
 }

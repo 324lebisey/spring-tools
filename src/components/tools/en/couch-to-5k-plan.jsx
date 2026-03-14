@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const FITNESS_LEVELS = [
   { id: "couch", label: "Total Couch Potato", emoji: "🛋️", desc: "Haven't exercised in months (or years)", weeks: 10 },
@@ -148,6 +148,21 @@ export default function CouchTo5K() {
   const [expandedWeek, setExpandedWeek] = useState({});
   const [completed, setCompleted] = useState({});
   const resultRef = useRef(null);
+
+  // Load completed state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("couch-to-5k-completed");
+      if (saved) setCompleted(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  // Save completed state to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem("couch-to-5k-completed", JSON.stringify(completed));
+    } catch {}
+  }, [completed]);
 
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
@@ -309,8 +324,38 @@ export default function CouchTo5K() {
             >
               📥 Download as PDF
             </button>
+            <button
+              onClick={() => {
+                setFitness("");
+                setDays("");
+                setGoal("");
+                setTerrain("");
+                setPlan(null);
+                setExpandedWeek({});
+                setCompleted({});
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
             {/* Summary bar */}
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #a5d6a7", boxShadow: "0 3px 16px rgba(46,125,50,0.08)" }}>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #a5d6a7", boxShadow: "0 3px 16px rgba(46,125,50,0.08)", position: "sticky", top: 0, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
                 <MiniStat emoji="📅" value={`${plan.totalWeeks} weeks`} label="Duration" />
                 <MiniStat emoji="🏃" value={`${totalSessions} sessions`} label="Total" />
@@ -339,6 +384,36 @@ export default function CouchTo5K() {
                 <span>{plan.terrainTip}</span>
               </div>
             )}
+
+            {/* Expand All / Collapse All */}
+            <button
+              onClick={() => {
+                const allExpanded = plan.weeks.every((_, i) => expandedWeek[i]);
+                if (allExpanded) {
+                  setExpandedWeek({});
+                } else {
+                  const all = {};
+                  plan.weeks.forEach((_, i) => { all[i] = true; });
+                  setExpandedWeek(all);
+                }
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 12,
+                padding: "10px",
+                borderRadius: 10,
+                border: "2px solid #c8e6c9",
+                background: "#f1f8e9",
+                color: "#2e7d32",
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+            >
+              {plan.weeks.every((_, i) => expandedWeek[i]) ? "🔽 Collapse All" : "🔼 Expand All"}
+            </button>
 
             {/* Week cards */}
             {plan.weeks.map((week, wi) => {

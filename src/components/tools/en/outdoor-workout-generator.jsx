@@ -395,7 +395,36 @@ export default function OutdoorWorkoutGenerator() {
             >
               📥 Download as PDF
             </button>
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: `2px solid ${activeColor}30` }}>
+            <button
+              onClick={() => {
+                setFitness("");
+                setEquipment([]);
+                setDuration("");
+                setFocus("");
+                setWorkout(null);
+                setCompleted({});
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: `2px solid ${activeColor}30`, position: "sticky", top: 0, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
                 <MiniStat emoji={FOCUS.find(f => f.id === workout.focus)?.emoji || "💪"} value={workout.focus.replace("_", " ")} label="Focus" color={activeColor} />
                 <MiniStat emoji="🏋️" value={workout.exercises.length} label="Exercises" color={activeColor} />

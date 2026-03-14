@@ -565,6 +565,34 @@ export default function SpringGardenPlanner() {
                   📥 Download as PDF
                 </button>
 
+                <button
+                  onClick={() => {
+                    setZone("");
+                    setFilter("all");
+                    setSelectedPlant(null);
+                    setGardenList([]);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  style={{
+                    width: "100%",
+                    marginBottom: 16,
+                    padding: "12px",
+                    borderRadius: 12,
+                    border: "2px solid #e0e0e0",
+                    background: "#fff",
+                    color: "#888",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+                  onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+                >
+                  🔄 Start Over
+                </button>
+
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {gardenPlants
                     .sort((a, b) => {

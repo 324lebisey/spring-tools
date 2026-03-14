@@ -245,6 +245,27 @@ export default function LawnCareEstimatorKR() {
             >
               📥 PDF 다운로드
             </button>
+            <button
+              onClick={() => { setHousing(""); setCondition(""); setSqm(50); setCustomSqm(""); setUseCustom(false); setSelectedServices(["weeding", "fertilizer", "cleanup"]); setDiyVsPro("diy"); }}
+              style={{
+                width: "100%",
+                marginTop: 12,
+                padding: "14px",
+                borderRadius: 14,
+                border: "2px dashed #ccc",
+                background: "rgba(255,255,255,0.7)",
+                color: "#888",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#558b2f"; e.currentTarget.style.color = "#558b2f"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 처음부터 다시
+            </button>
           </div>
         )}
 

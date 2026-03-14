@@ -45,7 +45,7 @@ function countItems(c){return Object.values(c).reduce((s,items)=>s+items.length,
 
 export default function CapsuleWardrobeKR(){
   const[cl,sCl]=useState("");const[st,sSt]=useState("");const[bu,sBu]=useState("");const[ge,sGe]=useState("");
-  const[show,sSh]=useState(false);const[owned,sO]=useState({});const[exp,sExp]=useState({});const ref=useRef(null);const pdfRef=useRef(null);
+  const[show,sSh]=useState(false);const[owned,sO]=useState({});const[exp,sExp]=useState({});const[allExp,sAE]=useState(false);const ref=useRef(null);const pdfRef=useRef(null);
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
       const html2pdf = html2pdfModule.default;
@@ -96,11 +96,13 @@ export default function CapsuleWardrobeKR(){
   >
     📥 PDF 다운로드
   </button>
+  <button onClick={()=>{sO({});sExp({"tops":true});sAE(false);}} style={{width:"100%",marginBottom:16,padding:"14px",borderRadius:14,border:"2px solid #e0e0e0",background:"#fff",color:"#888",fontWeight:800,fontSize:15,cursor:"pointer",fontFamily:"inherit",transition:"transform 0.15s"}} onMouseOver={(e)=>(e.currentTarget.style.transform="scale(1.02)")} onMouseOut={(e)=>(e.currentTarget.style.transform="scale(1)")}>🔄 처음부터 다시</button>
   <div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"20px 24px",marginBottom:20,border:"2px solid #f8bbd0"}}>
   <div style={{display:"flex",justifyContent:"space-around",flexWrap:"wrap",gap:12,marginBottom:14}}><MS e="👕" v={tot} l="총 아이템"/><MS e="✅" v={oc} l="이미 있는 것"/><MS e="🛒" v={tot-oc} l="사야 할 것"/><MS e="🔄" v={`${Math.round(tot*(tot-1)*0.6)}+`} l="가능한 코디 수"/></div>
   <div style={{background:"#fce4ec",borderRadius:10,height:14,overflow:"hidden"}}><div style={{width:`${tot>0?(oc/tot)*100:0}%`,height:"100%",background:"linear-gradient(90deg,#ec407a,#ad1457)",borderRadius:10,transition:"width 0.4s"}}/></div>
   <p style={{textAlign:"center",fontSize:12,color:"#999",margin:"8px 0 0",fontWeight:600}}>이미 가진 옷을 체크하면 아래에 쇼핑 리스트가 나타나요!</p></div>
 
+  <button onClick={()=>{if(allExp){sExp({});sAE(false);}else{const a={};Object.keys(cap).forEach(k=>{a[k]=true;});sExp(a);sAE(true);}}} style={{width:"100%",marginBottom:12,padding:"10px",borderRadius:12,border:"2px solid #f8bbd0",background:"#fce4ec",color:"#ad1457",fontWeight:800,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{allExp?"🔽 모두 접기":"🔼 모두 펼치기"}</button>
   {Object.entries(cap).map(([ck,items])=>{const m=CATS[ck];if(!m||!items?.length)return null;const isE=!!exp[ck];
   return(<div key={ck} style={{marginBottom:10}}><div onClick={()=>sExp(prev=>({...prev,[ck]:!prev[ck]}))} style={{padding:"14px 18px",borderRadius:isE?"14px 14px 0 0":14,background:isE?"#fce4ec":"rgba(255,255,255,0.88)",border:isE?"2px solid #f48fb1":"2px solid rgba(173,20,87,0.06)",borderBottom:isE?"none":undefined,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontWeight:800,color:isE?"#ad1457":"#666",fontSize:16}}>{m.emoji} {m.label} ({items.length}개)</span><span style={{color:"#ccc",transform:isE?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>▼</span></div>
   {isE&&<div style={{border:"2px solid #f48fb1",borderTop:"none",borderRadius:"0 0 14px 14px",padding:"14px 18px",background:"#fffafe"}}>{items.map((item,i)=>{const k=`${ck}-${i}`;const io=owned[k];

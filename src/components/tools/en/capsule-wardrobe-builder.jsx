@@ -499,6 +499,36 @@ export default function CapsuleWardrobeBuilder() {
             >
               📥 Download as PDF
             </button>
+            <button
+              onClick={() => {
+                setClimate("");
+                setStyle("");
+                setBudget("");
+                setGender("");
+                setShowResult(false);
+                setOwned({});
+                setExpandedCat({});
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
             <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #f8bbd0" }}>
               <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
                 <MiniStat emoji="👕" value={totalItems} label="Total Pieces" />
@@ -516,6 +546,37 @@ export default function CapsuleWardrobeBuilder() {
                 Check off items you already own to see your shopping list
               </p>
             </div>
+
+            {/* Expand All / Collapse All */}
+            <button
+              onClick={() => {
+                const catKeys = Object.keys(capsule).filter(k => CATEGORY_META[k] && capsule[k] && capsule[k].length > 0);
+                const allExpanded = catKeys.every(k => expandedCat[k]);
+                if (allExpanded) {
+                  setExpandedCat({});
+                } else {
+                  const all = {};
+                  catKeys.forEach(k => { all[k] = true; });
+                  setExpandedCat(all);
+                }
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 12,
+                padding: "10px",
+                borderRadius: 10,
+                border: "2px solid #f8bbd0",
+                background: "#fce4ec",
+                color: "#ad1457",
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+            >
+              {Object.keys(capsule).filter(k => CATEGORY_META[k] && capsule[k] && capsule[k].length > 0).every(k => expandedCat[k]) ? "🔽 Collapse All" : "🔼 Expand All"}
+            </button>
 
             {Object.entries(capsule).map(([catKey, items]) => {
               const meta = CATEGORY_META[catKey];

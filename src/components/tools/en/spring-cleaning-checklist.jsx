@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const HOME_TYPES = [
   { id: "studio", label: "Studio / 1BR", emoji: "🏠", rooms: ["bedroom", "bathroom", "kitchen", "living"] },
@@ -160,6 +160,17 @@ export default function SpringCleaningGenerator() {
   const [checklist, setChecklist] = useState(null);
   const [checked, setChecked] = useState({});
   const resultRef = useRef(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("spring-cleaning-checked");
+    if (saved) { try { setChecked(JSON.parse(saved)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(checked).length > 0) {
+      localStorage.setItem("spring-cleaning-checked", JSON.stringify(checked));
+    }
+  }, [checked]);
 
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
@@ -335,6 +346,37 @@ export default function SpringCleaningGenerator() {
             >
               📥 Download as PDF
             </button>
+
+            <button
+              onClick={() => {
+                setHomeType("");
+                setExtras([]);
+                setDepth("");
+                setChecklist(null);
+                setChecked({});
+                localStorage.removeItem("spring-cleaning-checked");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
+
             {/* Progress bar */}
             <div
               style={{
@@ -344,6 +386,9 @@ export default function SpringCleaningGenerator() {
                 marginBottom: 20,
                 border: "2px solid #bbdefb",
                 boxShadow: "0 3px 16px rgba(21,101,192,0.08)",
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>

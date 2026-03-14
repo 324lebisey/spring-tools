@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const PET_TYPES = [
   { id: "dog", label: "Dog", emoji: "🐕" },
@@ -262,6 +262,21 @@ export default function PetCareChecklist() {
   const [expandedSection, setExpandedSection] = useState({});
   const resultRef = useRef(null);
 
+  // Load checked state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("pet-care-checked");
+      if (saved) setChecked(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  // Save checked state to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem("pet-care-checked", JSON.stringify(checked));
+    } catch {}
+  }, [checked]);
+
   const downloadPDF = (element, filename) => {
     import('html2pdf.js').then((html2pdfModule) => {
       const html2pdf = html2pdfModule.default;
@@ -384,8 +399,39 @@ export default function PetCareChecklist() {
             >
               📥 Download as PDF
             </button>
+            <button
+              onClick={() => {
+                setPetType("");
+                setDogSize("");
+                setCatType("");
+                setRegion("");
+                setConcerns([]);
+                setPlan(false);
+                setChecked({});
+                setExpandedSection({});
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "12px",
+                borderRadius: 12,
+                border: "2px solid #e0e0e0",
+                background: "#fff",
+                color: "#888",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.borderColor = "#bbb"; e.currentTarget.style.color = "#555"; }}
+              onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0e0e0"; e.currentTarget.style.color = "#888"; }}
+            >
+              🔄 Start Over
+            </button>
             {/* Progress */}
-            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #d7ccc8" }}>
+            <div style={{ background: "rgba(255,255,255,0.9)", borderRadius: 18, padding: "20px 24px", marginBottom: 20, border: "2px solid #d7ccc8", position: "sticky", top: 0, zIndex: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                 <span style={{ fontWeight: 800, color: "#6d4c41", fontSize: 14 }}>Progress: {doneCount}/{totalTasks} tasks</span>
                 <span style={{ fontSize: 12, color: "#aaa" }}>{totalTasks > 0 ? Math.round((doneCount / totalTasks) * 100) : 0}%</span>
@@ -406,6 +452,56 @@ export default function PetCareChecklist() {
                 <div style={{ fontSize: 13, color: "#f57f17" }}>{fleaData.note}</div>
               </div>
             </div>
+
+            {/* Expand All / Collapse All */}
+            <button
+              onClick={() => {
+                const sectionIds = [
+                  ...(hasDog ? ["vet-dog"] : []),
+                  ...(hasCat ? ["vet-cat"] : []),
+                  ...(hasDog ? ["groom-dog"] : []),
+                  ...(hasCat ? ["groom-cat"] : []),
+                  ...(hasDog ? ["home-dog"] : []),
+                  ...(hasCat ? ["home-cat"] : []),
+                  ...concerns.filter((c) => CONCERN_TASKS[c]).map((c) => `concern-${c}`),
+                ];
+                const allExpanded = sectionIds.every(id => expandedSection[id]);
+                if (allExpanded) {
+                  setExpandedSection({});
+                } else {
+                  const all = {};
+                  sectionIds.forEach(id => { all[id] = true; });
+                  setExpandedSection(all);
+                }
+              }}
+              style={{
+                width: "100%",
+                marginBottom: 12,
+                padding: "10px",
+                borderRadius: 10,
+                border: "2px solid #d7ccc8",
+                background: "#efebe9",
+                color: "#6d4c41",
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "all 0.2s",
+              }}
+            >
+              {(() => {
+                const sectionIds = [
+                  ...(hasDog ? ["vet-dog"] : []),
+                  ...(hasCat ? ["vet-cat"] : []),
+                  ...(hasDog ? ["groom-dog"] : []),
+                  ...(hasCat ? ["groom-cat"] : []),
+                  ...(hasDog ? ["home-dog"] : []),
+                  ...(hasCat ? ["home-cat"] : []),
+                  ...concerns.filter((c) => CONCERN_TASKS[c]).map((c) => `concern-${c}`),
+                ];
+                return sectionIds.every(id => expandedSection[id]) ? "🔽 Collapse All" : "🔼 Expand All";
+              })()}
+            </button>
 
             {/* Collapsible sections */}
             {[
