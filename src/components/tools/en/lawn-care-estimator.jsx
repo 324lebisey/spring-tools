@@ -285,6 +285,29 @@ export default function LawnCareEstimator() {
               {REGIONS[region].name} · {CONDITIONS[condition].label} · {activeSqft.toLocaleString()} sq ft · {diyVsPro === "pro" ? "Professional" : "DIY"}
             </p>
 
+            <button
+              onClick={() => downloadPDF(estimateRef.current, 'lawn-care-estimate.pdf')}
+              style={{
+                width: "100%",
+                marginBottom: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #558b2f, #7cb342)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(85,139,47,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
+
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
               {SERVICES.filter((s) => selectedServices.includes(s.id)).map((s) => {
                 const est = getEstimate(s);

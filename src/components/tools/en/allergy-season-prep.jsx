@@ -442,6 +442,28 @@ export default function AllergyPrepTool() {
             <div style={{ background: "#fff8e1", borderRadius: 14, padding: "14px 18px", fontSize: 12, color: "#f57f17", lineHeight: 1.6 }}>
               <strong>⚠️ Disclaimer:</strong> This tool provides general wellness information, not medical advice. Always consult with a healthcare provider before starting new medications. If you experience severe reactions, difficulty breathing, or anaphylaxis, call emergency services immediately.
             </div>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'allergy-action-plan.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #5c6bc0, #7986cb)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(92,107,192,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
           </div>
         )}
 

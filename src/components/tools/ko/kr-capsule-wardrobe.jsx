@@ -142,6 +142,28 @@ export default function CapsuleWardrobeKR(){
   <div style={{color:"#888",fontSize:13,marginTop:4}}>쇼핑 없이 바로 코디를 시작하세요!</div>
   </div>}
 
+  <button
+    onClick={() => downloadPDF(pdfRef.current, 'capsule-wardrobe.pdf')}
+    style={{
+      width: "100%",
+      marginTop: 16,
+      padding: "14px",
+      borderRadius: 14,
+      border: "none",
+      background: "linear-gradient(135deg, #ad1457, #ec407a)",
+      color: "#fff",
+      fontWeight: 800,
+      fontSize: 15,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      transition: "transform 0.15s",
+      boxShadow: "0 4px 15px rgba(173,20,87,0.3)",
+    }}
+    onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+    onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+  >
+    📥 PDF 다운로드
+  </button>
   </div></div>}
 
   <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#f48fb1",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>👗🌸✨</div>봄 캡슐 옷장 — 옷장 고민 없이, 매일 예쁘게!</div></div></div>);

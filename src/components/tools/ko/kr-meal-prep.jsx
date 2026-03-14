@@ -69,6 +69,28 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8f5e9
 {!sg?wp.map(day=>{const isE=!!ed[day.day];return(<div key={day.day} style={{marginBottom:8}}><div onClick={()=>sE(prev=>({...prev,[day.day]:!prev[day.day]}))} style={{padding:"14px 18px",borderRadius:isE?"14px 14px 0 0":14,background:isE?"#fff3e0":"rgba(255,255,255,0.88)",border:isE?"2px solid #ffcc80":"2px solid rgba(230,81,0,0.06)",borderBottom:isE?"none":undefined,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><span style={{fontWeight:800,color:isE?"#e65100":"#555",fontSize:15}}>{day.day}요일</span>{!isE&&<span style={{fontSize:12,color:"#bbb",marginLeft:10}}>{day.breakfast?.name} · {day.lunch?.name} · {day.dinner?.name}</span>}</div><span style={{color:"#ccc",transform:isE?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>▼</span></div>
 {isE&&<div style={{border:"2px solid #ffcc80",borderTop:"none",borderRadius:"0 0 14px 14px",padding:"16px 18px",background:"#fffaf3"}}>{[{l:"🌅 아침",m:day.breakfast},{l:"☀️ 점심",m:day.lunch},{l:"🌙 저녁",m:day.dinner}].map(({l,m})=>m&&<div key={l} style={{marginBottom:16,padding:"14px 16px",background:"#fff",borderRadius:12,border:"1.5px solid #f0f0f0"}}><div style={{fontSize:12,color:"#e65100",fontWeight:800,marginBottom:4}}>{l}</div><div style={{fontWeight:800,color:"#333",fontSize:16,marginBottom:6}}>{m.name}</div><div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:8}}><span style={{fontSize:12,color:"#888"}}>⏱️ {m.time}</span><span style={{fontSize:12,color:"#888"}}>🔥 {m.cal}kcal</span><span style={{fontSize:12,color:"#888"}}>💪 {m.protein}</span></div>{m.seasonal?.length>0&&<div style={{fontSize:11,color:"#43a047",fontWeight:700,marginBottom:6}}>🌱 제철: {m.seasonal.join(", ")}</div>}<div style={{fontSize:13,color:"#555",lineHeight:1.7,marginBottom:8}}><strong>만들기:</strong> {m.how}</div><div style={{fontSize:12,color:"#999"}}><strong>재료:</strong> {m.ing?.join(", ")}</div></div>)}</div>}</div>)})
 :<div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"22px",border:"2px solid #ffcc80"}}><h3 style={{fontFamily:"'Jua',cursive",color:"#e65100",margin:"0 0 16px",fontSize:18}}>🛒 장보기 리스트</h3>{gl.map((item,i)=>{const k=`g-${i}`;const d=ch[k];return(<div key={i} onClick={()=>sCh(p=>({...p,[k]:!p[k]}))} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:10,background:d?"#e8f5e9":"#fafafa",cursor:"pointer",marginBottom:4,border:d?"1.5px solid #a5d6a7":"1.5px solid transparent"}}><div style={{width:20,height:20,borderRadius:5,border:d?"2px solid #66bb6a":"2px solid #ddd",background:d?"#66bb6a":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",fontWeight:800,flexShrink:0}}>{d?"✓":""}</div><span style={{fontSize:14,color:d?"#999":"#444",textDecoration:d?"line-through":"none",fontWeight:d?400:600,flex:1}}>{item.name}</span>{item.count>1&&<span style={{fontSize:11,color:"#bbb",fontWeight:700}}>×{item.count}끼</span>}</div>)})}</div>}
+<button
+  onClick={() => downloadPDF(ref.current, 'meal-prep-plan.pdf')}
+  style={{
+    width: "100%",
+    marginTop: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #e65100, #ff8a65)",
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: "0 4px 15px rgba(230,81,0,0.3)",
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button>
 </div>}
 <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#ffcc80",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>🥗🍓🌿</div>봄 식단 플래너 — 제철 먹고, 시간 아끼고!</div></div></div>);}
 function S({n,t,c,children}){return(<div style={{background:"rgba(255,255,255,0.85)",borderRadius:20,padding:"22px 24px",marginBottom:20,border:"2px solid rgba(230,81,0,0.08)"}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}><div style={{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${c},#ff8a65)`,color:"#fff",fontWeight:800,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{n}</div><h3 style={{margin:0,color:c,fontWeight:800,fontSize:16}}>{t}</h3></div><div style={{display:"flex",flexDirection:"column",gap:10}}>{children}</div></div>);}

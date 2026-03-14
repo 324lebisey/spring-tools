@@ -223,6 +223,28 @@ export default function LawnCareEstimatorKR() {
             >
               📥 PDF 다운로드
             </button>
+            <button
+              onClick={() => downloadPDF(estimateRef.current, 'lawn-care-estimate.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #558b2f, #7cb342)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(85,139,47,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 PDF 다운로드
+            </button>
           </div>
         )}
 

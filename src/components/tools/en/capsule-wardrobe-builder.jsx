@@ -645,6 +645,28 @@ export default function CapsuleWardrobeBuilder() {
                 )}
               </div>
             </div>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'capsule-wardrobe.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #ad1457, #ec407a)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(173,20,87,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
           </div>
         )}
 

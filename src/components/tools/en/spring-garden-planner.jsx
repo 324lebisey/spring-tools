@@ -542,6 +542,29 @@ export default function SpringGardenPlanner() {
                   {gardenPlants.length} plant{gardenPlants.length > 1 ? "s" : ""} selected — here's your timeline!
                 </p>
 
+                <button
+                  onClick={() => downloadPDF(gardenPlanRef.current, 'my-garden-plan.pdf')}
+                  style={{
+                    width: "100%",
+                    marginBottom: 20,
+                    padding: "14px",
+                    borderRadius: 14,
+                    border: "none",
+                    background: "linear-gradient(135deg, #43a047, #66bb6a)",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 15,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    transition: "transform 0.15s",
+                    boxShadow: "0 4px 15px rgba(67,160,71,0.3)",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+                  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  📥 Download as PDF
+                </button>
+
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {gardenPlants
                     .sort((a, b) => {

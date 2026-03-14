@@ -58,6 +58,28 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8eaf6
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:20,padding:24,marginBottom:20,border:"2px solid #c5cae9"}}><h2 style={{fontFamily:"'Jua'",color:"#5c6bc0",margin:"0 0 18px",fontSize:22}}>🏠 집 알러지 대비 체크리스트</h2><div style={{display:"flex",flexDirection:"column",gap:6}}>{HOME_PREP.map((item,i)=>{const k=`home-${i}`;const d=checked[k];return(<div key={i} onClick={()=>check(k)} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"8px 12px",borderRadius:10,background:d?"#e8f5e9":"#fafafa",cursor:"pointer",border:d?"1.5px solid #a5d6a7":"1.5px solid transparent"}}><div style={{width:20,height:20,borderRadius:5,border:d?"2px solid #66bb6a":"2px solid #ddd",background:d?"#66bb6a":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",fontWeight:800,flexShrink:0}}>{d?"✓":""}</div><span style={{fontSize:13,color:d?"#999":"#444",textDecoration:d?"line-through":"none",fontWeight:d?400:600}}>{item.emoji} {item.task}</span></div>)})}</div></div>
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:20,padding:24,marginBottom:20,border:"2px solid #c5cae9"}}><h2 style={{fontFamily:"'Jua'",color:"#5c6bc0",margin:"0 0 18px",fontSize:22}}>🔄 매일 알러지 루틴</h2>{[{key:"morning",label:"🌅 아침",items:DAILY.morning},{key:"afternoon",label:"☀️ 오후",items:DAILY.afternoon},{key:"evening",label:"🌙 저녁",items:DAILY.evening}].map(block=>(<div key={block.key} style={{marginBottom:16}}><div style={{fontWeight:800,color:"#3949ab",fontSize:15,marginBottom:8}}>{block.label}</div><div style={{display:"flex",flexDirection:"column",gap:4}}>{block.items.map((item,i)=>{const k=`daily-${block.key}-${i}`;const d=checked[k];return(<div key={i} onClick={()=>check(k)} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"8px 12px",borderRadius:10,background:d?"#e8f5e9":"#fafafa",cursor:"pointer",border:d?"1.5px solid #a5d6a7":"1.5px solid transparent"}}><div style={{width:20,height:20,borderRadius:5,border:d?"2px solid #66bb6a":"2px solid #ddd",background:d?"#66bb6a":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",fontWeight:800,flexShrink:0}}>{d?"✓":""}</div><span style={{fontSize:13,color:d?"#999":"#444",textDecoration:d?"line-through":"none",fontWeight:d?400:600}}>{item.emoji} {item.task}</span></div>)})}</div></div>))}</div>
 <div style={{background:"#fff8e1",borderRadius:14,padding:"14px 18px",fontSize:12,color:"#f57f17",lineHeight:1.6}}><strong>⚠️</strong> 일반 건강 정보이며 의료 조언이 아닙니다. 새 약물 복용 전 의사와 상담하세요. 호흡 곤란 시 119에 연락하세요.</div>
+<button
+  onClick={() => downloadPDF(ref.current, 'allergy-prep-plan.pdf')}
+  style={{
+    width: "100%",
+    marginTop: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #5c6bc0, #7986cb)",
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: "0 4px 15px rgba(92,107,192,0.3)",
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button>
 </div>}
 <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#9fa8da",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>🌸🤧💪</div>봄철 알러지 대비 플래너 — 올봄은 편하게!</div></div></div>)}
 function Box({n,t,c,children}){return(<div style={{background:"rgba(255,255,255,0.85)",borderRadius:20,padding:"22px 24px",marginBottom:20}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}><div style={{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${c},#7986cb)`,color:"#fff",fontWeight:800,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}}>{n}</div><h3 style={{margin:0,color:c,fontWeight:800,fontSize:16}}>{t}</h3></div>{children}</div>)}

@@ -83,6 +83,28 @@ return(<div key={i} onClick={()=>tCh(k)} style={{display:"flex",alignItems:"flex
 <div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"22px",marginTop:16,border:"2px solid #d7ccc8"}}><h3 style={{fontFamily:"'Jua',cursive",color:"#6d4c41",margin:"0 0 14px",fontSize:18}}>🏃 봄 활동량 늘리기</h3>
 {hasDog&&<div style={{marginBottom:hasCat?16:0}}>{hasCat&&<div style={{fontWeight:800,color:"#8d6e63",fontSize:13,marginBottom:8}}>🐕 강아지:</div>}{ACT_DOG.map((w,i)=>(<div key={i} style={{display:"flex",gap:12,padding:"8px 0",borderBottom:i<ACT_DOG.length-1?"1px solid #f0ebe8":"none"}}><span style={{fontWeight:800,color:"#6d4c41",fontSize:13,minWidth:80}}>{w.w}</span><div><div style={{fontSize:13,fontWeight:700,color:"#555"}}>{w.act}</div><div style={{fontSize:12,color:"#aaa"}}>{w.note}</div></div></div>))}</div>}
 {hasCat&&<div>{hasDog&&<div style={{fontWeight:800,color:"#8d6e63",fontSize:13,marginBottom:8}}>🐈 고양이:</div>}{ACT_CAT.map((w,i)=>(<div key={i} style={{display:"flex",gap:12,padding:"8px 0",borderBottom:i<ACT_CAT.length-1?"1px solid #f0ebe8":"none"}}><span style={{fontWeight:800,color:"#6d4c41",fontSize:13,minWidth:80}}>{w.w}</span><div><div style={{fontSize:13,fontWeight:700,color:"#555"}}>{w.act}</div><div style={{fontSize:12,color:"#aaa"}}>{w.note}</div></div></div>))}</div>}</div>
+<button
+  onClick={() => downloadPDF(ref.current, 'pet-care-plan.pdf')}
+  style={{
+    width: "100%",
+    marginTop: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: "linear-gradient(135deg, #6d4c41, #a1887f)",
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: "0 4px 15px rgba(109,76,65,0.3)",
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button>
 </div>}
 <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#bcaaa4",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>🐾🌸💕</div>반려동물 봄 케어 — 행복한 반려생활, 건강한 봄!</div></div></div>);}
 function S({n,t,su,c,children}){return(<div style={{background:"rgba(255,255,255,0.85)",borderRadius:20,padding:"22px 24px",marginBottom:20,border:"2px solid rgba(109,76,65,0.08)"}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:su?4:14}}><div style={{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${c},#a1887f)`,color:"#fff",fontWeight:800,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{n}</div><h3 style={{margin:0,color:c,fontWeight:800,fontSize:16}}>{t}</h3></div>{su&&<p style={{margin:"0 0 14px 38px",fontSize:12,color:"#aaa",fontWeight:600}}>{su}</p>}{children}</div>);}

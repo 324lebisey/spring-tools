@@ -289,6 +289,28 @@ export default function CouchTo5KKR() {
                 ].map((t, i) => (<div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}><span style={{ fontSize: 18, flexShrink: 0 }}>{t.emoji}</span><span style={{ fontWeight: 600 }}>{t.tip}</span></div>))}
               </div>
             </div>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'couch-to-5k-plan.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: "linear-gradient(135deg, #2e7d32, #66bb6a)",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: "0 4px 15px rgba(46,125,50,0.3)",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 PDF 다운로드
+            </button>
           </div>
         )}
         <div style={{ textAlign: "center", marginTop: 48, padding: "20px 0", color: "#a5d6a7", fontSize: 13 }}>

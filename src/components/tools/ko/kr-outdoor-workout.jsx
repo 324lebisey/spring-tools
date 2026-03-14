@@ -51,7 +51,29 @@ return(<div style={{minHeight:"100vh",background:"linear-gradient(160deg,#e8f5e9
 </button><div style={{background:"rgba(255,255,255,0.9)",borderRadius:18,padding:"20px 24px",marginBottom:20,border:`2px solid ${ac}30`}}><div style={{display:"flex",justifyContent:"space-around",flexWrap:"wrap",gap:12,marginBottom:14}}><MS e={FOC.find(x=>x.id===w.focus)?.emoji||"💪"} v={FOC.find(x=>x.id===w.focus)?.label||""} l="부위" c={ac}/><MS e="🏋️" v={w.exercises.length} l="운동" c={ac}/><MS e="⏱️" v={`${w.duration}분`} l="시간" c={ac}/><MS e="✅" v={`${dc}/${w.exercises.length}`} l="완료" c={ac}/></div><div style={{background:`${ac}15`,borderRadius:10,height:14,overflow:"hidden"}}><div style={{width:`${w.exercises.length>0?(dc/w.exercises.length)*100:0}%`,height:"100%",background:`linear-gradient(90deg,${ac},${ac}cc)`,borderRadius:10,transition:"width 0.4s"}}/></div>{dc===w.exercises.length&&w.exercises.length>0&&<div style={{textAlign:"center",marginTop:10,fontSize:16,fontWeight:800,color:ac}}>🔥 운동 완료! 대단해요! 💪</div>}</div>
 <div style={{background:"#fff8e1",borderRadius:14,padding:"12px 16px",marginBottom:16,fontSize:13,color:"#f57f17",fontWeight:600}}>🔥 워밍업 먼저! 5분 가벼운 조깅, 팔·다리 돌리기. 차가운 근육 = 부상!</div>
 {w.exercises.map((ex,i)=>{const dn=c[i];return(<div key={i} style={{background:dn?`${ac}08`:"rgba(255,255,255,0.9)",borderRadius:16,padding:"18px 20px",border:dn?`2px solid ${ac}40`:"2px solid rgba(0,0,0,0.04)",marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}><span style={{width:28,height:28,borderRadius:"50%",background:dn?ac:`${ac}20`,color:dn?"#fff":ac,fontWeight:800,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>{dn?"✓":i+1}</span><span style={{fontWeight:800,color:dn?"#999":"#333",fontSize:16,textDecoration:dn?"line-through":"none"}}>{ex.name}</span></div><div style={{display:"flex",gap:16,marginBottom:8,marginLeft:38}}><span style={{fontSize:13,color:ac,fontWeight:700}}>{ex.reps}</span><span style={{fontSize:13,color:"#888",fontWeight:600}}>{ex.sets}세트</span>{ex.rest&&ex.rest!=="—"&&<span style={{fontSize:13,color:"#bbb",fontWeight:600}}>휴식: {ex.rest}</span>}</div><div style={{fontSize:13,color:"#777",marginLeft:38,lineHeight:1.5,fontWeight:600}}>💡 {ex.tip}</div></div><button onClick={()=>tC(i)} style={{width:40,height:40,borderRadius:"50%",border:dn?`2px solid ${ac}`:"2px dashed #ddd",background:dn?ac:"#fff",color:dn?"#fff":"#ddd",fontSize:18,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{dn?"✓":""}</button></div></div>)})}
-<div style={{background:"#e0f7fa",borderRadius:14,padding:"14px 18px",marginTop:16,fontSize:13,color:"#00838f",fontWeight:600}}>🧘 <strong>쿨다운:</strong> 5분 걷기 + 주요 근육 스트레칭 30초씩. 미래의 나에게 감사받아요!</div></div></div>}
+<div style={{background:"#e0f7fa",borderRadius:14,padding:"14px 18px",marginTop:16,fontSize:13,color:"#00838f",fontWeight:600}}>🧘 <strong>쿨다운:</strong> 5분 걷기 + 주요 근육 스트레칭 30초씩. 미래의 나에게 감사받아요!</div>
+<button
+  onClick={() => downloadPDF(pdfRef.current, 'outdoor-workout.pdf')}
+  style={{
+    width: "100%",
+    marginTop: 16,
+    padding: "14px",
+    borderRadius: 14,
+    border: "none",
+    background: `linear-gradient(135deg, ${ac}, ${ac}cc)`,
+    color: "#fff",
+    fontWeight: 800,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "transform 0.15s",
+    boxShadow: `0 4px 15px ${ac}4d`,
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+  onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  📥 PDF 다운로드
+</button></div></div>}
 <div style={{textAlign:"center",marginTop:48,padding:"20px 0",color:"#a5d6a7",fontSize:13}}><div style={{fontSize:24,marginBottom:8}}>💪🌳☀️</div>야외 운동 생성기 — 당신의 헬스장은 어디에나!</div></div></div>);}
 function S({n,t,su,co,children}){return(<div style={{background:"rgba(255,255,255,0.85)",borderRadius:20,padding:"22px 24px",marginBottom:20,border:"2px solid rgba(0,0,0,0.04)"}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:su?4:14}}><div style={{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${co},${co}88)`,color:"#fff",fontWeight:800,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{n}</div><h3 style={{margin:0,color:co,fontWeight:800,fontSize:16}}>{t}</h3></div>{su&&<p style={{margin:"0 0 14px 38px",fontSize:12,color:"#aaa",fontWeight:600}}>{su}</p>}<div style={{display:"flex",flexDirection:"column",gap:10}}>{children}</div></div>)}
 function B({a,o,children,co,w}){return(<button onClick={o} style={{padding:w?"14px 18px":"14px 10px",borderRadius:14,border:a?`2px solid ${co}`:"2px solid #e0e0e0",background:a?`${co}10`:"rgba(255,255,255,0.85)",color:a?co:"#777",fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"inherit",textAlign:w?"left":"center",display:w?"flex":"block",alignItems:"center"}}>{children}</button>)}

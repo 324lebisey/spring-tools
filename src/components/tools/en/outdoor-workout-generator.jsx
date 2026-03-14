@@ -478,6 +478,28 @@ export default function OutdoorWorkoutGenerator() {
                 5 min easy walk, then stretch major muscle groups: quads, hamstrings, hip flexors, chest, shoulders, lats. Hold each stretch 30 seconds. Your future self will thank you.
               </div>
             </div>
+            <button
+              onClick={() => downloadPDF(resultRef.current, 'outdoor-workout.pdf')}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                padding: "14px",
+                borderRadius: 14,
+                border: "none",
+                background: `linear-gradient(135deg, ${activeColor}, ${activeColor}bb)`,
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 15,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "transform 0.15s",
+                boxShadow: `0 4px 15px ${activeColor}40`,
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              📥 Download as PDF
+            </button>
           </div>
         )}
 
